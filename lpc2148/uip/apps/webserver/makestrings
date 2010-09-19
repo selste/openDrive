@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+
+#
+#  $Id: uiptask.c 152 2008-10-17 01:24:44Z jcw $
+#  $Revision: 152 $
+#  $Author: jcw $
+#  $Date: 2008-10-16 21:24:44 -0400 (Thu, 16 Oct 2008) $
+#  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/uip/uiptask.c $
+#
+
+sub stringify 
+{
+  my $name = shift (@_);
+  open (OUTPUTC, "> $name.c");
+  open (OUTPUTH, "> $name.h");
+
+  open (FILE, "$name");
+
+  while (<FILE>) 
+  {
+    if (/(.+) "(.+)"/) 
+    {
+      $var = $1;
+      $data = $2;
+
+      $datan = $data;
+      $datan =~ s/\\r/\r/g;
+      $datan =~ s/\\n/\n/g;
+      $datan =~ s/\\01/\01/g;      
+      $datan =~ s/\\0/\0/g;
+
+      printf (OUTPUTC "const char $var\[%d] = \n", length ($datan) + 1);
+      printf (OUTPUTC "/* \"$data\" */\n");
+      printf (OUTPUTC "{");
+      for ($j = 0; $j < length ($datan); $j++) {
+        printf (OUTPUTC "%#02x, ", unpack ("C", substr ($datan, $j, 1)));
+      }
+      printf (OUTPUTC "};\n");
+
+      printf (OUTPUTH "extern const char $var\[%d];\n", length ($datan) + 1);
+
+    }
+  }
+  close (OUTPUTC);
+  close (OUTPUTH);
+}
+
+stringify ("http-strings");
+
+exit 0;

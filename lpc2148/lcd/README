@@ -1,0 +1,34 @@
+--
+--  $Id: README 279 2008-11-03 23:51:30Z jcw $
+--  $Revision: 279 $
+--  $Author: jcw $
+--  $Date: 2008-11-03 18:51:30 -0500 (Mon, 03 Nov 2008) $
+--  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/lcd/README $
+--
+
+This code should drive any HD44780 based LCD controller, but it's been tested
+with CrystalFontz CFAH1602Z-YYH-ET display.  There is an application note that
+recommends this display family for 3.3V operation.     This display does have
+one rather bothersome quirk: the backlight needs 4.1 volts.  3.3V is not enough
+to drive it to adequate brightess, and 5V will fry it.  In a design that made
+use of this display, a Sharp PQ1R40 regulator was used.  The LCD product page
+is at http://www.crystalfontz.com/products/product.phtml?product_id=524 
+
+lcd_4bit.c is for interfacing to LCDs with a 4-bit interface.  There's not
+enough I/O on the Olimex LPC-P2148 to drive the LCD in 8-bit mode, so this is
+the example to use.
+
+lcd_8bit.c is for interesting to LCDs with an 8-bit interface.  This basic code
+works on another platform, but it's untested as distributed.  It *should* work,
+however.  And if there are any problems, they should be very minor, and
+probably revolve around actual port I/O.
+
+CrystalFontz has a nifty little negative bias charge pump circuit that uses two
+diodes, two capacitors and a resistor.  Using the one of the PWM channels, you
+can vary the contrast in software by changing the duty cycle of the PWM.  The
+demo code already has support to demonstrate the PWM usage (although it
+requires an oscilloscope to see).  
+
+The docs/biaspump.png file shows the backlight regulator circuit and the
+negative bias charge pump circuit.  For the Olimex LPC-P2148 board, connect
+P0.21 to LCD_Vo.  I find that about -1.5V gives a nice contrast ratio.

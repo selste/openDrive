@@ -1,0 +1,26 @@
+--
+--  $Id: README 331 2008-11-09 16:59:47Z jcw $
+--  $Revision: 331 $
+--  $Author: jcw $
+--  $Date: 2008-11-09 11:59:47 -0500 (Sun, 09 Nov 2008) $
+--  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/spi/README $
+--
+
+The SPI EEPROM support and uIP are mutually exclusive, primarily because the
+chip select line (SSEL0) is shared.  The SPI EEPROM code does a check at the
+start of every operation to see if uIP is running.  If it is, an error is
+returned.  When uIP is stopped, the SPI EEPROM interface is re-initialized.
+
+The ENC28J60 only operates in mode 0,0.  The 25LC512 can operate in mode 1,1 or
+0,0.  Typically, most SPI EEPROMs that I've dealt sith have been run in 1,1
+mode.  Since the idea was to re-use as much code as possible, mode 0,0 is used
+for the 25LC512.
+
+It's possible to run both at the same time, provided two conditions are met: 1)
+The 25LC512 and the ENC28J60 have separate chip select lines (this is not much
+trouble), and 2) Access to the SPI controller is protected with
+portENTER_CRITICAL()/portEXIT_CRITICAL() sections.  
+
+The latter is necessary to make sure that a context switch doesn't take place
+while the uIP task or monitor task is waiting for a SPI transaction to
+complete.

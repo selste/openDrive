@@ -1,0 +1,41 @@
+--
+--  $Id: README 282 2008-11-06 01:21:04Z jcw $
+--  $Revision: 282 $
+--  $Author: jcw $
+--  $Date: 2008-11-05 20:21:04 -0500 (Wed, 05 Nov 2008) $
+--  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/kbd/README $
+--
+
+This is not an ideal keyboard implementation, as it requires constantly
+scanning the keyboard.  A proper keyboard diode OR's the row or column inputs
+together and generates an interrupt when a key is pressed, and only then scans
+the keyboard.  This code also uses hard delays to allow the I/O lines to
+settle.  Unfortunately, the delays are too short to implement using a timer.
+
+In the design I originally used this code in, the FreeRTOS tick was 1
+millisecond, and this task ran every 10 milliseconds.  In the LPC2148 demo
+code, the system tick is 10ms, and I didn't really want to change it just add
+the keyboard code.  The task also originally ran at a high priority, since it
+only ran on every 10th tick.  For the demo code, it was changed it to run every
+20ms to make sure the idle task has a chance to run.
+
+So, basically, this keyboard code works, but it's a sort of last resort
+keyboard implementation.  It should run at a high priority, but only
+periodically so it doesn't eat the entire CPU.  Running it slower results in a
+less responsive keyboard.  Use it as a model for a better implementation.
+
+The keyboard used was a 4x4 membrane keyboard from Pactec that fits perfectly
+into the recessed area of one of their boxes that has an angled face for an 
+LCD.  It's hard to find these keyboards now, but we had a stack of them in 
+stock from a previous project.  
+
+The keyboard debouncing algorithm uses a Jack Gannsle method.  It's a nice, 
+solid, efficient way of debouncing, and much better than using a simple
+timer to look for the last time a state change occurred.  See his article
+at http://www.ganssle.com/debouncing.pdf
+
+The keyboard uses P1.16 through P1.23 on the LPC-2148 board.  If you happen to
+be in possession of one of these Pactec keyboards, you should just be able to
+plug it in, with pin 1 on P1.16 and pin 8 pn P1.23.  If not, you'll want to
+look at the kbd/kbd.c file and figure out how the row/columns need to be
+connected to the port pins.

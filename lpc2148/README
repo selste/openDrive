@@ -1,0 +1,1102 @@
+--
+--  $Id: README 357 2009-01-12 04:13:45Z jcw $
+--  $Revision: 357 $
+--  $Author: jcw $
+--  $Date: 2009-01-11 23:13:45 -0500 (Sun, 11 Jan 2009) $
+--  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/README $
+--
+
+  J.C. Wren
+  2008/11/09
+  jcwren@jcwren.com
+
+  The most recent version of this package may be found at http://jcwren.com/arm
+
+  PayPal donations cheerfully accepted at jcwren@jcwren.com.  No obligation
+  what-so-ever, but any amount is appreciated.  Received funds go towards 
+  purchasing other evaluation platforms, so I can create other demo code
+  packages.
+
+  I'm changing the format of how updates are documented.  Rather than including
+  it in the body of the text, they will be appended to the front, with a date.  
+
+  2009/01/11, version 1.44:
+
+    Improved response of telnet sessions by creating a 'fast poll' queue.  In
+    previous versions, when data was posted into the send queue by a non-uIP
+    task (i.e., the monitor), it would take up to 1.25 seconds before the queue
+    queue would be flushed.  This is because the uIP task would block for up to
+    0.25 seconds waiting for received data, and then up to 1 second until the
+    periodic timer fires.  This is circumvented by changing the blocking time
+    to 0.10 seconds, and checking the fast poll queue that a task can post a
+    connection ID to.  What happens in more detail is that when a character is
+    send to the telnetd queue, if the queue is full, it posts the connection
+    ID of the telnet session to the fast poll queue, which causes the uIP task
+    to poll the connection for data to send, and then reposts the character
+    to the telnetd queue with a wait time so that the lower priority uIP
+    task gets a chance to run.
+
+    Fixed minor problem in conditional compilation if CFG_SNTP was defined but
+    CFG_RTC was not.
+
+    lpc214x.h file had incorrect defines for the ADC1 (AD1_*) registers.
+
+    Added 'pwm width' command to CLI.  This allows specifying the width of the
+    PWM pulse in microseconds.  If a R/C servo control line is connected to the
+    PWM5 output and the PWM frequency set to 50Hz ('pwm freq 20000'), the servo
+    position can be centered with 'pwm width 1500'.  'pwm width 1100' will move
+    the servo in one directory, while 'pwm width 1900' will move the servo to
+    the other direction.  Note that different R/Cs have different travel
+    limits, and moving beyond that limit will cause the servo to stall.  If the
+    servo remains stalled, it can burn up.  Monitor the current with an amp
+    meter to determine what the limits of the servo are.
+
+    Added 'pwm width' command to allow setting the width of the PWM pulse in
+    microseconds.  This allows for much finer resolution when controlling servo
+    motors.  A Hitec Servo HS-311 can be controlled with by connecting the
+    power lead to 4.8V to 6V supply, and the control lead to the PWM5 output on
+    the P2148 board.  The ground of the power supply for the servo should also
+    be connected to the ground of the P2148 board.  Set the PWM frequency to 50
+    milliseconds ('pwm freq 20', for 20hz), and the width to 1500 microseconds
+    ('pwm width 1500') before connecting the servo.  For the HS-311, the
+    position can be varied from about 90 degrees CCW ('pwm width 600') to 90
+    degrees CW of center ('pwm width 210').  Avoid stalling the motor with
+    values outside these ranges, they will be damaged.
+
+    Fixed problem with open() with O_APPEND is specified.  The _open call in
+    newlib/syscalls.c was not positioning to the end of the opened file (I
+    think I believed that open() itself handled that).  Thanks to Marshall
+    Crocker for catching that one.
+
+    Marshall also caught another error in _open() where if a file did not
+    exist, all subsequent open()'s would fail.  This occured because the
+    openfiles slot was being reused on the next open, and the pointer to the
+    fatfsFCB buffer was not null (part of a internal consistency check).
+
+    Added 'file concat' command to verify that O_APPEND works as expected.
+    'file concat fn_1 fn_2' will concatentate the contents of fn_1 to fn_2,
+    creating fn_2 if necessary, or positioning to the end of it if it already
+    exists, then appending the contents of fn_1 to it.
+
+    Added CFG_RAM_INTS to enable (default) placing interrupt vectors in RAM.
+    Note that if this is not defined and CFG_FIQ is, the FIQ code will still
+    run, but it will be slightly slower since it will be running from flash.
+
+
+  2008/11/09, version 1.43:
+
+    Attempted WinARM happiness.  Working code can be compiled with the WinARM
+    20060606 build.  Please see the README.WinARM file in the .zip or .tgz 
+    file.  
+
+
+  2008/11/09, version 1.42:
+
+    Added support for the Microchip 25LC512 64Kx8 SPI EEPROM.  As a result, the
+    'ee' commands were changed to 'eei' (for EEPROM I2C), and the SPI EEPROM
+    commads are 'ees'.  Note that the SPI EEPROM and the ENC28J60 cannot be
+    active at the same time because the chip select is shared (SSEL0).  There
+    is a check for if the uIP task is running, the 'ees' commands will generate
+    an error, but the 25LC512 will respond when uIP talks to the ENC28J60, so
+    you'll want to remove the 25LC512 when you start uIP (short form: the
+    25LC512 can be used while the ENC28J60 is present, but the ENC28J60 can't
+    be used while the 25LC512 is present).
+
+    Every function (except 'version' and 'help') are removable through the
+    CFG_xxx defines in the top-level Makefile.  By default, all options except
+    the USB mass storage option are enabled (USB MSC is off by default because
+    it is incompatible with the USB console, which is enabled). 
+
+    It is interesting to note that with EVERYTHING turned off and -Os (optimize
+    for size), the code gets down to 37K.  I prefer to use -O3 (optimize for
+    speed) as speed is more important than code size in a 512K part (at this
+    point).  With -O3 and everything turned on, the code is 224K.
+    Unfortunately, the stdio file functions pull in a lot of code, including
+    malloc().  There's just no way to get rid of this.  Using CFG_INTONLY will
+    remap the printf and friends to iprintf, which results in a good savings
+    (CFG_GPS disables this, as the latitude and logitude are floats).  Be sure
+    to see sysdefs.h for how things get included/excluded (it's nasty).
+
+    I2C EEPROM write routine now checks if the requested address plus number of
+    bytes would cross a page boundary, and throws an error if it does.  I.e.,
+    the AT24C1024 has a 256 byte page size, so a write request of 'eei wa 0xfe
+    1 2 3' would generate an error.
+
+    The USB serial code now sort of honors the virtual DTR/RTS state.  When the
+    board is reset and the initial USB enumeration done, the virtual DTR/RTS
+    lines are not asserted.  When a terminal program (such as HyperDoodoo)
+    starts, the virtual control lines are asserted, and characters will be sent
+    to the USB virtual UART.  HOWEVER, stupid Windows/HyperDoodoo doesn't
+    de-assert virtual DTR on a disconnect, so the code has no way of knowing
+    that no one is listening to it.  This creates the problem of a telnet
+    session hanging because output is also being sent to the virtual UART.
+    Since nothing is listening to the far end of the virtual UART, the buffers
+    fill, and the task blocks.  Currently, the only option is to enable
+    CFG_AUTO_UIP (not enabled by default) to start uIP automatically, thus not
+    requiring a USB connection to be established.
+
+    In addition to CFG_AUTO_UIP, setting CFG_AUTO_DHCP will cause uIP to try to
+    get it's IP address from a DHCP server.  And if CFG_AUTO_SNTP and CFG_RTC
+    are enabled, and the DHCP server returns a SNTP server, the time will be
+    set automagically also.
+
+
+  2008/11/05, version 1.41:
+
+    Updated FreeRTOS to v5.1.0.
+
+    Updated Makefile.winarm as best I can without WinARM installed.  I took a
+    shot at installing it, but didn't succeed.  I have no idea which version
+    people are trying to use.  What appears to be the most common version is
+    over 2 1/2 years old now.
+
+    Added some keypad demo code.  If you have a Pactec membrane keyboard, it
+    will plug right on to the Olimex LPC-P2148 P1.16 connector.  It can easily
+    be adapter for other matrix type keyboards, up to 4x4.   Please see the
+    README in the kbd directory.  Note that the keyboard and LCD tasks cannot
+    run at the same time, therefore when one is started, the other is stopped
+    (this is handled in the monitor/monitor.c file).  
+
+    Slightly modified how tasks (such as LEDs, GPS, and keyboard) are started
+    and stopped, by moving the checking and vTaskDelete call into the relevant
+    file (and out of monitor/monitor.c)
+
+
+  2008/11/03, version 1.40:
+
+    Renamed the lpc210x.h file to lpc214x.h, since it's fairly LPC214x
+    specific.
+
+    Added uIP TCP/IP stack.  Requires a Microchip ENC28J60 connected to the
+    SPI0 port.  Interrupt is on EINT3 (pin 34).  This requires that the
+    RS1/UEXT jumper be placed in the UEXT position, and also means that UART1
+    cannot be used (for the demo code, this is normally setup for the GPS).
+    See the included 'docs/inj28j60.png' and 'docs/enc28j60.png' files.  The
+    in28J60 module was obtained from The Microcontroller Shop
+    (http://microcontrollershop.com) for about $30 USD.  See the 'uip/README'
+    file for details.  
+    
+    uIP is started with 'uip start'.  By default, DHCP is enabled.  This can be
+    disabled with 'uip dhcp off', and setting a static IP address set with 'uip
+    ip 192.168.1.1'.  The gateway can be set with 'uip gw 192.168.1.254', and
+    the netmask set with 'uip nm 255.255.255.0'.  'uip ip', 'uip gw' and 'uip
+    nm' with no arguments prints the current values.  Note the default static
+    IP address is 0.0.0.0, as is the gateway and netmask.  You need to reset
+    these after each reset of the board (there is no provision for storing
+    these in FLASH or uninitialized RAM, yet).  There is a reasonable about
+    of checking on the IP address syntax, but all possible errors may not be
+    covered.  
+    
+    The MAC address can be set with 'uip mac 00:01:02:03:04:05', where each
+    digit pair is a hex value.  If not overridden, the default MAC address of
+    00:bd:3b:33:05:71 is used.   This sets the MAC address in both the ENC28J60
+    and the uIP stack. 'uip mac' with no parameter prints the current MAC
+    address.
+
+    'uip start' starts the uIP stack, web server and telnet server.  I
+    considered having the webserver serve files from the CF card, but decided
+    against that the extra step of having a correctly formatted CF card was not
+    necessary.
+
+    uIP can be enabled or disabled in the top-level Makefile via the CFG_UIP
+    option.  The telnet and httpd servers, along with DHCP, can also be
+    selectively enabled or disabled in the Makefile with the CFG_TELNETD,
+    CFG_HTTPD and CFG_DHCP options.  
+
+    'uip sntp <ip address>' will make 10 requests 10 seconds apart to a SNTP
+    server.  If the time is returned, the RTC will automatically be set (time
+    is UTC).  This does not currently implement the two-step process to
+    compensate for network delays.  Using a nearby time server is recommended.
+    If time server is returned has been returned in the DHCP request, time may
+    be set with 'uip sntp set'.  Time offset will be applied if set via 'uip
+    to' or if returned in the DHCP request.
+
+    Note that the telnet server runs in parallel with the serial or USB
+    console, so any input or output on one will be seen on the other.  KNOWN
+    BUG: If the USB console does not have a session open, the telnet session
+    will hang.  The USB code needs some way to check if the pipe is not open,
+    and skip the write if is not.  I haven't figured out how to do this yet :)
+
+    Added a few more #defines for the SPI modules to the lpc214x.h file, along
+    with additional GPIO bit combinations.
+
+    The mmc/spi.c file has been renamed to mmc/ssp.c.  The mmc/spi.h file has
+    been renamed to mmc/ssp.h.  All functions that previously started with
+    'spi' have been renamed to 'ssp'.
+
+    Pins that drive the LEDs are now configured in leds/leds.c in ledInit(),
+    rather than in cpu/cpu.c.
+
+    UART pins are now assigned in uart/uart.c initialization code rather than
+    in cpu/cpu.c.  
+    
+    The UART code has been factored out into completely separate files, to make
+    it easier to delete support for a UART when not needed.  Previously, all
+    the UART code was in uart/uart.c and uart/uartISR.c, and a switch()
+    statement was used to specify which UART was to be operated on.  They have
+    now been broken into separate files, and named accordingly.
+
+    The external interrupts (EINT) code has been factored out into completely
+    separate files.  Here again, that should make deleting unwanted code for
+    other projects easier.  Also added EINT1 (unused for anything, could be
+    used to have the BSL switch generate an interrupt), and EINT3 (for
+    uIP/ENC28J60 support).
+
+    Add *.c, *.h, *.s and Makefiles have subversion tags
+
+    Added various GCC warning suppressions in the uip Makefiles to keep GCC
+    from complaining about difference in signedness, type-punned pointers,
+    casting alignment, etc.  This is not the way to fix the problem.  uIP
+    should be fixed directly, but I was generally trying to avoid altering the
+    original source as much as possible.
+
+    Pin assignment in peripherals modules rearranged to enable peripheral after
+    pin assignment.  Although not clear what chapter 7.3 means by "peripherals
+    should be connected to the appropriate pins prior to being activated", I
+    take that to mean prior to being enabled in the SCB_PCONP register.
+
+    Pin assignments now correctly mask bits beforing OR'ing in pin function
+    (this didn't un-break anything, but it's the more correct method.  See
+    eints/eints0.c as an example).
+
+    LED, GPS and sensors task can now be selectively stopped and restarted.
+
+    LCD support is now conditionally defined in the top-level Makefile (it is
+    enabled by default)
+
+    Rewrote GPS parser to get rid of scanf(), saved 22K of code space, and
+    reduced the stack requirements for the GPS task from 2K to 512 bytes.
+
+
+  2008/10/04, version 1.30:
+
+    Updated FreeRTOS to version 5.0.4
+
+    The I/O ports are now configured and used in fast I/O port mode, rather
+    than legacy slow-poke mode.  Most people in the real world have no need of
+    the slower legacy mode.
+
+    Added 'misc ports' command to display the _PIN, _DIR and _MASK registers of
+    port 0 and 1.
+
+    Added LCD example.  There are two files in the lcd directory, lcd_4bit.c
+    and lcd_8bit.c.  The lcd_4bit is suitable for the Olimex LPC-P2148 board
+    (which this demo code is targeted for).  The lcd_8bit.c file is targeted
+    for an LCD that has a full 8-bit interface.  The 8-bit code was extracted
+    from a previous project and is untested, but SHOULD either work as-is
+    (adjusting for the port pin assignments, of course), or be very close.  The
+    LCD is handled in it's own task, started and stopped with 'lcd start' and
+    'lcd stop'.  This shows dynamic task creation and destruction, and means
+    the LCD task won't automatically start for users without LCDs connected.
+    Use 'lcd msg "<msg>"' to display a message, 'lcd clear' to clear screen,
+    and 'lcd gotoxy <0..1> <0..19>' to position the cursor for writing.
+
+    Added PWM example.  Unfortunately, this will require an oscilloscope or
+    logic analyzer to be able to see the results of it.  At reset, PWM5 is set
+    up for a 20Khz period, and a duty cycle of 50%.  The frequency can be
+    varied with the 'pwm freq' command (between 1 and 48000000Hz), and the duty
+    cycle can be varied with the 'pwm duty' command (between 0 and 100%).  This
+    code was extracted from another project that used it to control a bias
+    circuit for LCD contrast.
+
+    Added an example of using the timer 1 match registers.  In a previous
+    release, I had made the statement that how Olimex drove the speaker was
+    flawed.  Thanks to some code contributed by Dave Madden, it turns out that
+    using timer 1 and the match registers, tones between 60 and 20,000 Hertz
+    can be fairly easily generated.  Either Olimex saw this early on, or they
+    just got lucky ('beep off', 'beep on <60..20000>').
+
+    Using the previous code as the base, the demo code now plays 'Mary Had A
+    Little Lamb' on the squeaker ('beep mhall'), and a really lousy version of
+    'Smoke On The Water' ('beep smotw').  I don't read guitar tablature, and I
+    had a heck of time trying to find the notes and duration for the opening
+    riff. 
+
+    Interrupt vectors are now in RAM by default.  When the system starts, they
+    are initially in flash.  The FIQ interrupt (which does nothing but count
+    FIQ events) gets copied to RAM, as do the interrupt vectors.  This allows
+    the FIQ to run as fast as possible.  Note that if 'fiq on' is running, and
+    the beep commands are used, the FIQ interrupt counter will stop running, as
+    the beep code also uses timer 1.
+
+    All the file related command have been moved to the 'file' submenu in the
+    monitor.  This makes the top level commands cleaner and more topical to the
+    section they serve.   Use 'file init' if you change the card without
+    rebooting the system.  Remember to use 'file mount' to mount a MMC/SD card
+    that's installed at boot or after 'file init'.
+
+    Added a prompt to indicate the system is ready for commands ("Demo>").  
+    Thanks to Dave Madden (again) for that code fragment.
+
+    Improved USB performance, thanks to code from Jan Topolski.  This fixes the
+    issue where the system performs very poorly under Windows when connected
+    via USB.  Windows apparently is sending a constant stream of NAKs, with
+    each NAK generating an interrupt.  The effect of this could be seen when
+    running the MMC/SD card performance tests.  When connected to a Windows
+    box, the performance was about 10% of that when connected to a Linux box.  
+    
+    Jan also optimized the code that checks for the USB interrupt source.  In
+    the original code, all 32 possible interrupts were checked each time in a
+    loop.  The modified code aborts the loop early when it sees that all
+    interrupts have been handled.
+
+    The MMC/SD code should be more tolerant of various cards at the SPI level.
+    David Johnson contributed an improved SPI I/O routine and reports that
+    Sandisk cards now work for him.  Note that only cards which have 512 byte
+    sectors are supported.  
+
+    The MMC/SD code now checks the card present (P1.25) and write protect
+    (P1.24) switches on the MMC/SD card socket.  File operations will fail if
+    the card is not present, or an attempt to write to a protected card is
+    made.
+
+    The MMC and SPI drivers have been factored out of the FatFS code so they
+    can be shared with the USB mass storage code (usbmass).  This should also
+    make it easier to port to other LPC2xxx family parts, such as the LPC2468,
+    which has an improved MMC/SD interface.
+
+    The lpc210x.h header file has been updated with addition definitions,
+    primarily in the fast GPIO and the PWM modules.
+
+    Removed some unused files from the I2C code.  Those files should have been
+    deleted prior to the final release package.
+
+    Added -Wno-strict-aliasing to the FreeRTOS/Makefile to eliminate some
+    warnings.  Also added -Wno-cast-align to FreeRTOS/Makefile and
+    usbmass/Makefile to eliminate some casting warnings.
+
+    The usbmass storage driver seems to work, although it is abysmally slow.
+    It's very inadvisable to use the 'file' commands while the MMC/SD card is
+    mounted under Windows (and probably Linux), due to common buffers.  The
+    driver is enabled in top-level Makefile, with the -D CFG_USB_MSC option.
+
+    Please note that the terminal window of Flash Magic is squirrely.  I
+    thought there was a bug when copying large files to the console ('file cp
+    <some file on MMC/SD card>'), and this sent me on a short wild goose chase.
+    Garbage was being emitted after roughly 16K bytes.  Turns out that the
+    Flash Magic terminal window is just plain slow, and it's getting stupid
+    when it can no longer keep up.  Also, 'file cpcon <filename>' expects
+    control-D to stop copying the file, and the terminal window does not pass
+    control characters.  ProComm (and others, but never, ever, EVER HyperTerm)
+    is a much better choice for straight serial work.
+
+
+  2007/07/22, version 1.20:
+
+    Added interrupt driven I2C master transmit and receive code.  I'm pretty
+    confident that all the cases are handled correctly, but I don't have any
+    way to introduce certain errors for testing.  There are now two files in
+    the ./i2c directory, "i2cInt.c" and "i2cPolled.c".  Edit the ./i2c/Makefile
+    to select interrupt drive or polled I2C handling.  There is some support
+    for debugging I2C the interrupt drive routines.  As interrupts occur, the
+    various state changes are recorded, and the 'i2c dump' command will display
+    them.  This is disabled by default, but can be enabled by editing the
+    ./i2c/i2cInt.c file and defining I2C_DEBUG.
+
+    Added raw I2C support.  The 'i2c' commands allow directly reading and
+    writing an I2C device (as opposed to using the LM75 wrapper for LM75's, or
+    the EEPROM wrapper for EEPROMs).  See 'i2c help' for a list of commands.
+    Note that when reading from an I2C device via the raw commands, a maximum
+    of 16 bytes may be read or written.  If you need more, change the buffer
+    sizes in the appropriate commands in ./monitor/monitor.c, and also the
+    maximum number of arguments in the command dispatch table (commandListI2C).
+
+    Added EEPROM support.  The 'ee' subset of commands allow reading and
+    writing of a 24Cxxx series type EEPROM.  The code is currently targeted at
+    an Atmel 24C1024 128Kx8 part (I had some laying around).  It should be
+    pretty easy to rework them for any smaller part.  See 'ee help' for a list
+    of supported commands.
+
+    Fixed the LM75 support to allow writing the config, TOS and THYST
+    registers.  The previous versions allowed reading the registers, but I
+    forgot to write code to allow changing them.  Oops.
+
+    Moved 'date' and 'setdate' commands into the 'rtc' sub-menu as 'get' and
+    'set', respectively.  Added 'alarm' command that allows setting an alarm
+    date/time, or disabling it.  When an alarm fires, 'ALARM -- YYYY/MM/DD
+    HH:MM:SS' is printed to the console.  Also added 'periodic', which when
+    enabled, prints 'PERIODIC -- YYYY/MM/DD HH:MM:SS' to the console at the top
+    of every minute.  The RTC also demonstrates using the default vector
+    address functionality of the non-vectored IRQs in the VIC (alternatively,
+    by un-defining RTC_NONVECTOREDIRQ in the ./rtc/rtc.h file, a regular
+    vectored IRQ can be used).
+
+    Note on the RTC alarm and periodic output: It's really gross.  Console
+    input is handled by a libc read() call.  This is a blocking call,
+    implemented by doing a FreeRTOS xQueueReceive in the console device code
+    (UART 0, UART 1, or USB).  So the only way to get the read() to return so
+    the CCI can output the message is to reserve the special characters 0xfe
+    and 0xff (something a user can usually never type).  When the CCI getline
+    routine sees either of those characters, it immediately returns.  These
+    characters are then checked for by the CCI command parser, and either an
+    alarm or periodic message output.  If the user is in the process of typing
+    in a command, the input will be lost.  Without totally rewriting the CCI
+    into a queue based message passing architecture, I couldn't find a more
+    elegant way to handle this.  So basically, the RTC interrupt sends a 0xfe
+    or 0xff into the input buffer for the console device, which then returns
+    the character, which is then processed by the CCI code.
+
+    Changed the 'task' command to a 'mem' sub-command.  Added the 'map'
+    command, which shows how memory is allocated.  Overview: The .txt section
+    contains the program code, the initialization values for static data in RAM
+    (statements like 'static int i = 172;'), and the glue section (I believe
+    this is where ARM/THUMB inter-networking code is placed).  The .data section 
+    is the area of RAM that gets initialized from the constants in FLASH at 
+    startup (so that i == 172).  The .bss section is all static data that is 
+    zero length (statements like 'static int foo [12]').  The 'map' command 
+    prints out the starting and ending address of each area (size calulation is 
+    left to the user).  Also included is the starting and ending addresses for 
+    the various stacks (undefined, abort, FIQ, IRQ, service), the start of heap,
+    and the current heap end.  The scheduler executes in supervisor mode, tasks 
+    execute in system mode.
+
+    Added FIQ demo.  Timer 1 is set up to interrupt at 8hz (8 times a second,
+    or every 125 milliseconds), and is configured as a fast interrupt.  The
+    interrupt handler does nothing more than increment a counter.  The 'fiq on'
+    command will enable the timer, 'fiq off' will disable it, 'fiq count' will
+    print the counter value, and 'fiq clear' will reset the counter to 0.  As
+    long as the FIQ is enabled, it should be merrily counting along.  NOTE: the
+    actual FIQ vector is in ./boot.s.  Also in this file is the FIQ stack size.
+    I've set it to 32 bytes (8 words).  This was derived empirically by
+    examining the lpc2148.lst file, and seeing how many registers were pushed
+    by the fiqISR code.  Only 3 registers are pushed, so 8 words was deemed
+    enough space.  An interrupt that actually does anything substantial will
+    require more stack space, and the FIQ_STACK_SIZE should be adjusted
+    accordingly.  The FIQ in the CPSR is enabled by FreeRTOS when it starts the
+    scheduler, just like the IRQ.
+
+    The stacks have been tuned down pretty small to allow a larger heap area.
+    Many boot.s files allocate 1K for the supervisor stack, and another 1K for
+    the IRQ stack.  I've tried to exercise all the functions in the demo to get
+    a feel for stack usage, and both of those stacks have been tuned down to
+    256 bytes each.  There shouldn't be any issue with using a lot of stack in
+    any code prior to the call to vTaskStartScheduler(), since the supervisor
+    stack will overflow into system/user stack space.  Once tasks are running,
+    they have their own private stack spaces inside the FreeRTOS allocated
+    memory.  If the interrupt routines are modified to use more dynamic space,
+    then the interrupt stack may need to be increased.  So far, I've seen less
+    than 50% utilization.  The FIQ stack is very small, as it does nothing more
+    than increment a counter.  More complex FIQ routines will need more space.
+
+    Fixed problem with CCI 'mv' command failing.  Default compiliation options
+    for newlib for ARM don't define HAVE_RENAME, so the newlib rename() was
+    trying to do the link/unlink method of rename a file.  FatFS (and FAT file
+    systems) don't support links, so this was always failing, since link()
+    returns -1.  Provided our own rename() in newlib/syscalls.c to override the
+    newlib rename().
+
+    Added a data abort, prefetch abort and undefined instruction handler.   The
+    abort handler works by saving the state of the CPU to a block of memory,
+    then enabling the watchdog to force a reset.  This method was used instead
+    of printing directly to the serial port, as some people are using the USB
+    as the console port, and there's no gaurantee that the system is still
+    stable enough for USB to work.  So instead, the state is saved, the reset
+    is forced, and the user can then use the 'abort' set of commands to examine
+    the system state.  The 'regs' command will display the registers at the
+    time of the abort, and print the opcode of the instruction that failed
+    (except for prefetch abort).  The 'clear' command sets the memory used by
+    the abort handler to 0's.  The 'dirty' command sets the sigil used to
+    indicate if the abort memory contains valid data.  'dabort', 'pabort' and
+    'undef' force each of the types of aborts.  To try it, start the system,
+    type 'abort clear', then 'abort regs'.  All registers should be 0.  Now
+    type 'abort dabort'.  This forces an access to location 0x40008000, which
+    does not exist.  After the LPC2148 has reset, type 'abort regs'.  Examine
+    the PC value, open the lpc2148.lst file in an editor, and search for that
+    address.  You should find that the abort occurred in the monitorAbortDabort
+    code, at the 'ldrb' instruction.  Note that if the PC is showing somewhere
+    in the boot.s code area, it's likely a double abort is occuring.  Most
+    likely the stack pointer was already corrupted at the time of the abort,
+    and when the stack is being copied, it's reading from memory that will
+    cause a data abort.  After an abort, you'll want to do a 'wdt clear' to
+    clear the WDMOD.WDTOF flag, otherwise you'll be unable to re-enter ISP mode
+    without a power cycle.
+
+    Added 'misc' menu, which right now consists of the 'sizeof' command.  This
+    displays the size of the common C data types (just in case you weren't sure
+    a void * is 4 byes).  I'll add others here later, like when FreeRTOS starts 
+    exposing structure sizes in a future release.
+
+    Updated FreeRTOS to version 4.4.0
+
+    CURRENTLY BROKE, WAITING FOR JTAG DONGLE (feel free to submit a fix).
+    Added USB mass storage capability.  If CFG_USB_MSC is defined in the
+    Makefile, USB serial support will be disabled, and mass storage enabled.
+    This allows the MMC/SD card to be mounted like a disk drive.  DANGER!  The
+    CCI commands for file management remain enabled.  This means you can create
+    a file on the Windows (or Linux) mounted device, and see the changes from
+    the CCI.  HOWEVER: The SPI routines that read/write the MMC/SD card are not
+    thread-safe, so a USB request to read/write the disk can interrupt a CCI
+    command.  It's crazy dangerous to actually use the CCI file commands while
+    the MMC/SD card is mounted under Windows or Linux.  What you can do is
+    mount the MMC/SD card, copy files to/from it, unmount it, then use the CCI
+    commands to see that things really changed.  A later revision of the demo
+    package will likely at least protect the SPI I/O from being interrupted
+    (although this defeats the 'Real' in RTOS to do so).
+
+
+Overview:
+
+  This package demonstrates using LPCUSB and FatFS under FreeRTOS on the Olimex
+  LPC2148 board, using GCC and newlib.  Examples include FreeRTOS queues and
+  semaphores, LPC2148 analog to digital converters (ADCs), external interrupts,
+  the real-time clock (RTC), general purpose IO (GPIO), serial ports (UARTs),
+  and USB.   Also included is a newlib syscalls.c that almost completely
+  implements all syscalls.c functions.
+
+  The package (as built, .hex file included) presents the USB port as a virtual
+  comm port.  The virtualized port is used to talk to the console command
+  interpeter (CCI), that allows various functions to be exercised.
+  Alternatively, the package can re-compiled to use UART0 as the console port. 
+
+  If a GPS with NMEA output at 4800 baud is connected to UART1, one of the
+  tasks will parse the NMEA input stream, and display a position report.  In
+  addition, the RTC may be set from the GPS time/date.
+
+  FatFS support is included, and the CCI has several Unix-y commands to
+  manipulate files (mkfs, df, ls, mkdir, rmdir, rm, mv, cp, chmod, and sync).
+  There is also a command that allows through-put testing on the MMC/SD card. 
+
+  This package exists because I wanted to familiarize myself with the LPC2148,
+  FreeRTOS, FatFS and LPCUSB for a personal project, using GCC and newlib (who
+  can afford those commercial packages?  Not I).  By slightly modifying the
+  resulting framework, I was able to produce a package that others may possibly
+  find useful.
+
+
+Software tools:
+
+  The package compiles using the arm-elf GCC package.  Gentoo users can
+  install this by emerging the 'crossdev' package, then 'crossdev -t arm-elf'.
+  Once the arm-elf verison of GCC is installed, the package can be rebuilt with
+  'make'.    
+
+  To program the board, the Philips LPC2000 Flash Utility v2.2.3 Windows tool
+  was used.  There are Linux based tools for programming the LPC21xx parts, any
+  of which support the LPC2148 should be suitable.  It may be normal, but I
+  couldn't get the board to program at speeds other than 19200 and 38400.
+
+  ProComm was used to talk to the console port on UART0, and HyperTerm to talk
+  to the console port when using USB (Don't get me started on how crappy
+  HyperTerm is.  I *DESPISE* this abortion, and figure that Hilgraeve must have
+  pictures of Gates with a goat or something.  We can argue about MS quality
+  all day long, but HT has all the "quality" of a 6 year olds first programming
+  project in QBASIC.  The only reason it was used was because ProComm can't
+  talk to COM18, which is what the virtual serial port appears as).
+
+  If using the USB virtual comm port under Windows, the 'usbser.sys' and
+  'usbser.inf' files may be needed.  Often, these files are already on the
+  drive somewhere, and Start->Search->Files can be used to located them.  If
+  not present, they are included in the ./Windows directory in the package.
+
+  Under Linux, 'minicom' should be able to talk to both the serial port and the
+  virtual comm port the USB port appears as.  Bertrik's wiki, located at
+  "http://wiki.sikken.nl/index.php?title=LPCUSB", has a note about using LPCUSB
+  under Linux.
+
+  The default baud rate for UART0 is 115200.  The baud rate selected for the
+  USB virtual comm port is irrelevant, and may be any speed.
+
+
+Rebuilding it:
+
+  Simply typing 'make' should build the entire package.  The FreeRTOS modules
+  will emit several warnings about type punned references, which can (safely?)
+  be ignored.  
+
+  If you wish to use UART0 for the console port, edit ./monitor/monitor.c, jump
+  to near line 938, and change the "#if 1' to '#if 0', then recompile.
+
+  If you wish to change the baud rates for UART0 or UART1, edit ./main.c, jump
+  to near line 62, and change the rates.  Any standard baud rate should produce
+  usable results.
+
+  'make clean' will clean the project, removing the ./*.hex, ./*.lst, ./*.map,
+  ./*.elf files, and ./common/common.a, along with all *.o and .depend files in
+  any sub-directories.
+
+  'make tags' will rebuild the ctags file for 'vi' (and no doubt emacs, if
+  you're one of "them").
+
+
+Hardware (required and optional):
+
+  Olimex LPC-P2148 board (required)
+  USB cable (optional)
+  Serial cable (optional)
+  GPS with NMEA output and serial cable (optional)
+
+
+Using it (Windows):
+
+  For the purposes of these instructions, it will be assumed that COM1 is the
+  serial port on the host PC, a USB cable is connected to the LPC-P2148 board
+  and the PC, and that the Philips LPC2000 Flash Utility V2.2.3 will be used
+  for programming.  Please note that Windows 2000 was used, and that dialogs
+  for Windows XP are probably slightly different.  If you're using Vista, I'm
+  surprised it can stay up long enough for you to read this document...
+
+  Connect the RS232_0/ICSP DB-9 on the LPC-P2148 board to the comm port on the
+  PC, using a straight-thru serial cable.  Set both the ICSP slide switches
+  (located near the RS232_0/ICSP DB-9 connector) to the 'on' position (towards
+  the DB-9 connector), then press the reset button (located next to the ICSP
+  switches).  
+
+  Configure the Philips utility for COM1, 38400 baud.  Click the 'Read Device
+  ID' button.  LPC2148 should appear in the 'Device' text field.  Note that the
+  device ID has to be read to set the value, as there's a nasty bug in the
+  utility that prevents selecting it from the drop down list.
+
+  Click the "..." button in the 'Flash Programming' block, then locate and
+  select the 'lpc2148.hex' file, followed by clicking the 'Upload to Flash'
+  button.  At this point, the flash image should start being programmed.
+
+  When it completes, set the two ISCP slide switches to 'off', and press the
+  reset button.  The 'LED1' LED should start flashing.  
+
+  If Windows already does not already have the 'usbser.sys' driver installed, a
+  dialog will appear regarding the discovery of new hardware.  (I don't
+  remember how the dialog goes, so you'll have to infer your way through this
+  process).  When prompted for the driver, navigate to the ./Windows directory,
+  and select 'usbser.inf'.  This should install the driver for the virtual comm
+  port that will support the USB port.
+
+  Right-click on the 'My Computer' icon on the Windows desktop, select
+  Properties, then the Hardware tab, followed by 'Device Manager'.  Click the
+  '+' on the 'Ports (COM & LPT), and there should be an entry for "USB CDC
+  serial port emulation (COMxx)" (where 'xx' will be a number).  Note the COM
+  port for use with HyperTerm (see previous rant).
+  
+  Start HyperTerm (Start->Programs->Accessories->Communications->HyperTerm)
+  (see previous rant).  When the dialog appears, type a name for the connection
+  (The COMxx name is a good choice).  Click the drop-down box under 'Connect
+  using'.  Select the COMxx port name from the drop-down list.  Click 'OK',
+  followed by File->Save.  Now click the third icon from the left, which looks
+  like a telephone with the handset on the hook.
+
+  If all went well, typing 'help<return>' should show a list of commands
+  supported by the CCI.  If so, congratulations!  You can now play with various
+  commands.  If not, there's not much advice that can be offered at this point.
+
+  Baldur Gislason informed me that the Philips Flash Utility has been replaced
+  by by Flash Magic (http://www.flashmagictool.com).  I gave this a try, and it
+  worked well enough.  It's a nicer interface, but it seems a tad slower.
+  Rather than go into detail how to use it, I'll just say that I set the devce
+  to LPC2148, interface to 'None (ISP)', the oscillator frequency to 12.00000,
+  and checked the 'Erase blocks used by Hex File', and it just worked.
+
+
+Using it (Linux):
+
+  Eeek!  This needs to be written.
+
+  (Richard T. Stofer says that Debian plays nicely with the LPCUSB code.  with
+  the virtualized comm port appearing as ACM0.  'minicom' can talk to this
+  port).
+
+
+Hardware thingies:
+
+  The two pushy buttons on the LPC-P2148 board (B1 and B2) enable and disable
+  LED2.  Pressing B1 should light LED2, pressing B2 should extinguish it.
+  These buttons are connected to the EINT2 and EINT0 lines, respectively.  The
+  associated code demonstrates handling an external interrupt, and toggling an
+  I/O pin in the interrupt service routine (ISR).
+
+  The potentiometer, AN_TR, is connected to ADC0, channel 3.  The 'sensors'
+  task checks the value every 100 milliseconds.  The software divides the pot
+  into 4 zones, each covering about 1/4 of the range the pot may be rotated.
+  When the pot is fully counter-clockwise, LED1 will be on for 200 milliseconds
+  and off for 800.  When the pot is moved to the 2nd zone, the on/off times
+  become 400ms/600ms.  The 3rd zone has on/off times of 600ms/400ms, and fully
+  clockwise is 800ms on, 200ms off.
+
+  LED1 is controlled by the LED task.  This is a lower priority task.  Each
+  time a single on/off cycle has completed, it's message queue is checked to
+  see if the blink ratio times should be changed due to the AN_TR pot changing
+  zones.
+
+  LED2 is controlled by the B1 and B2 pushy buttons, as mentioned above.
+
+  The DAC output on the AOUT pin changes every 100 milliseconds by 1/64 of the
+  range of the DAC (0.0515625 volts).  The generates a sine wave with a period
+  of 12.8 seconds, or 0.078125 Hertz.  Hang a 'scope or DVM on the AOUT pin to
+  see the change.
+
+  The I2C routines are setup to talk to a LM75 temperature sensor.  These can
+  often be found on old PC motherboards, or as samples from National.  The I2C
+  demo code is a simple polled approach, and does not take advantage of either
+  interrupts or the I2C state machine.  The 'lm75' CCI command allows reading
+  and writing of the configuration, THYST and TOS registers, and reading of the
+  temperature register.  The 'lm75 mode' command determines if the registers
+  are read using an I2C repeated start sequence instead of an I2C stop then I2C
+  start.  Repeated starts are faster, and allow for holding the I2C bus in a
+  multi-master environment.  The default is repeated starts (mode 0).  There is
+  one potential spot for the code to hang.  If the I2C bus fails to release SCL
+  (if the I2C device is powered down, perhaps), it will hang waiting for the
+  status interrupt bit to change.  Any hard while loops should be wrapped in a
+  counter or timer check.
+
+  Demo now includes watchdog timer example.  'wdt test' enables the watchdog.
+  If no command is typed for 10 seconds, the system will reset.  'wdt status'
+  can be used to examine the current watchdog state and the RSIR register
+  (which allows determination of why a reset occurred).  Use 'wdt clear' to
+  clear the RSIR status.
+
+
+Sort of hardware thingies:
+
+  The SWI demo code is taken from several different projects, and culled down
+  into something I felt was more readable, and better for explanations.  The
+  CCI 'swi' commands allow setting the state of, turning on, turning off and
+  toggling LED2.  The commands starting with 'a' use the assembly interface
+  (assembly sequences are used to affect LED2), whereas the commands starting
+  with 'c' manage LED2 in C.  Note that the pushy-buttons also toggle LED2, so
+  there can be some interaction.
+
+
+CCI commands:
+
+  If you're a Linux user, most of the file commands are fairly self
+  explanatory.  If you're not a Linux user, you should be, because it's better
+  on our side of the fence.  The file commands require that a MMC/SD card be
+  installed in the MMC/SD slot.  BEFORE USING THE FILE COMMANDS, USE THE
+  'mount' COMMAND TO MOUNT THE MMC/SD CARD.  Note that the first partition on
+  the MMC/SD card will be mounted, and this is the only one supported.  It must
+  be a FAT12, FAT16 or FAT32 partition.
+
+  If the MMC/SD card is not formatted with a FAT12/FAT16/FAT32 file system, you
+  can use the 'mkfs' command to create it.  If anything already exists on the
+  card, 'mkfs' will wipe it out.  
+
+  Note that while a fairly good success rate has been obtained with the cards
+  on hand, one Sandisk 64MB MMC card did not work.  Not sure why, but the MMC
+  drivers are probably not handling something quite right.
+
+  'cpcon <filename>' allows a text file to be created from the CCI.  Enter text
+  until you're bored, then type ctrl-d save and exit.  Note that whatever
+  characters are typed are saved into the file verbatim.  This means that
+  characters like backspace are actually put into the file (feel free to
+  improve that code...)
+
+  Before creating any files, you may wish to set the system date, so that files
+  are date/time stamped properly.  If a GPS with NMEA output is connected to
+  RS232_1, you can use the 'gps' command to verify the serial connection, that
+  NMEA data is being parsed, and that the GPS has acquired (required for the
+  date/time to be set).  If you have no GPS attached, you may enter the date
+  and time as parameters.  'settime 2007/07/08 22:51:25' will set the date and
+  time to July 8th, 10:51pm and 25 seconds.  No timezone info is applied, so
+  date/times acquired from the GPS are UTC.  Date/times set manually may be set
+  to local time or UTC (or something completely random, if you're into that).
+
+  The 'thruput' command allows measuring MMC/SD read and write performance.
+  Eight file sizes are used: 1K, 8K, 16K, 64K, 128K, 512K, 1MB, and 2MB.  A
+  temporary file is created on the MMC/SD card.  Measurements can be done one
+  of four ways:  'noints' (fastest, but disables all tasking), 'normal' (CCI
+  task priority is not changed, no tasks are suspended), 'suspendall' (all
+  tasks are suspended, no context switches made, but 10ms interrupts still
+  runs), and 'high' (CCI task is elevated to highest priority for duration of
+  test).  Oddly, writes are faster than reads when not using the 'noints' mode.
+  I have not yet researched why.  Leaving interrupts enabled *seriously*
+  impacts the file system performance, nominally by a factor of 20.
+
+  Richard T. Stofer noticed that this slow down only appears when using the
+  'usbser.sys' drivers under Windows.  When using the Linux ACM drivers, or
+  when using UART0 as the console port with the USB cable disconnected, this
+  problem does not occur.  We can only assume that the Windows driver sends
+  lots of (needless) packets (yet another reason to switch to Linux!)
+
+  The 'date' command will report the current date/time from the RTC.  If you
+  have an external 3V battery plugged into the BAT connector, the RTC will
+  preserve it's values across power-downs.  Regardless of the battery presence,
+  date/time will be preserved across resets (as long as power is not removed).
+
+  The 'sensors' commands reports very little useful information.  The sensors
+  task executes every 100ms, and samples the ADC connected to the AN_TR
+  potentiometer.  Every time the task runs, the sensors counter is increment by
+  one.  If the AN_TR pot is adjusted far enough to change the zone, the ADC
+  changed value will increment.  See the section above on the pot.  The
+  associated code demonstrates running a high priority task with a constant
+  execution frequency, sampling an ADC, and sending a message to another task.
+
+  The 'mem' command displays the various tasks running, and the amount of
+  unused stack available to each task, along with the task priority and such.
+  The associated code demonstrates the 'vTaskList' RTOS call.  Note that in a
+  'real' system, leaving the task trace code enabled (configUSE_TRACE_FACILITY)
+  imposes a slight penalty on context switches, which may be undesirable.
+  
+  The 'iap' commands allow experimenting with the In-Application Programming
+  (IAP) code.  The demo code demonstrates preparing, erasing, writing, blank
+  checking, and retrieving processor ID and boot loader version numbers.  IAP
+  deals with primarily with sectors.  In the LPC2148 (which has 512K of flash),
+  there are 4K and 32K sectors.  The CCI will not allow selecting sectors that
+  are used for code.  The 'fss' command will find a safe sector to use with the
+  'iap' commands.  Once a safe sector is known, you can erase and fill this
+  sector.  The blank checking will work on any valid sector (there are 27 in
+  the LPC2148).  The IAP_COPYRAMTOFLASH (writing to flash) is demonstrated
+  by the fill command.  Whatever size the sector selected is, the 'fill'
+  command will fill the entire contents with the supplied byte value.  The 'md'
+  command can be used to dump the sector contents to see the effects of 'erase'
+  and 'fill'.  The 'stoa' command is used to convert a sector number to an
+  address for 'md'.  It is strongly recommended that you become familiar with
+  the section on IAP in the LPC2148 datasheet before using these commands.  The
+  IAP prepare and compare functions are not CCI accessible.  These are handled
+  internally by the erase and fill code.
+
+
+MMC/SD notes:
+
+  As mentioned above, I have a Sandisk 64MB MMC card that the MMC drivers can't
+  seem to recognize.  I have 4 other cards that work fine, one of which is an
+  MMC, the other three which are SD.  I'd like to resolve this issue.  
+
+  During the 'thruput' test, when interrupts are left enabled, I have on rare
+  occasions seen a read or write error occur.  I believe this is because a
+  context switch is taking place during some time critical code.  
+
+  Ideally, interrupts would be disabled.  However, disabling interrupts makes
+  an RTOS merely an OS.  The 'real-time' part means predictable response to
+  interrupts, and the executing time-critical tasks on-time.  In this code, the
+  MMC/SD code is non-reentrant (only one task may read/write the card), and not
+  time critical.   If multiple tasks have to write to disk, this would
+  currently have to be handled by creating a task that communicates through
+  queues to other tasks, and manages the MMC/SD card.
+
+  Note that if a GPS is connected, a message that a NMEA checksum could not be
+  found may occasionally appear.  While the actual test is being run, the GPS
+  task is not processing messages, and the serial buffer overruns.  When the
+  task is allowed to run again (between tests), partial NMEA messages that
+  cannot be parsed may be present, resulting in the error message.
+
+
+GCC notes:
+
+  This code was compiled with -O3.  This results in code that's about 16K
+  larger than -Os, but has a measurable impact on the MMC/SD card throughput
+  (not large, but it can be seen).  I went with -O3 because with 512K of FLASH,
+  and 144K or so used, there's plenty of room.
+
+  I'm not sure what the compiliation options for newlib are.  'crossdev'
+  compiled those, and I suspect it was with -Os, since embedded systems
+  generally tend to consider size over speed.
+
+  GCC is an amazing package.  I'm used to running into compiler issues with
+  many of the micros that I work with (SCCS, Microchips C18, etc).  It's so
+  nice to have a compiler that produces code without problems, and doesn't have
+  idiot front-ends that can't even get the sign on an enum correct (at least
+  Microchip got it right for the dsPIC and PIC24 parts, which used GCC.  C18...
+  Don't go there...)
+
+  There's a trick to writing Makefiles, and I don't have it.  It's an arcane
+  art, and involves the slaughtering of goats, black candles, and full moons.
+  The Makefiles I did write are very basic, and use recursion ('Recursive make
+  considered harmful!'.  Foo on that.  Worked for me).  
+
+  I tried a couple of approaches, and either everything built anyway, or
+  nothing built at all.  To make the linking work, as files are compiled,
+  they're dumped in to ./common/common.a, and main.c is linked against that.
+  So far, the expected bite on the butt for doing it this way has not happened.
+
+  It would be really neat to have Makefiles done right.  Alas, I don't know how
+  to do it right.  So if the common.a approach looks really ugly to you, that
+  means you probably know how to write Makefiles that handle sub-directories
+  correctly, and you can tell me how it should be done :)  (With examples!)
+
+
+Notes on newlib:
+
+  I wasn't happy with the newlib syscalls.c that was included in the original
+  LPC2148 port.  I more or less completely rewrote this, with the exception of
+  _sbrk().  _open() can open the serial ports, USB port, and FatFS files.  All
+  supporting functions except _fstat() work (see FatFS complaint at bottom).
+
+  Newlibs method of converting a file descriptor (as returned by _open()) to a
+  slot (which points to assorted info for that fd) uses a loop.  As this is
+  done on EVERY read and write call, unnecessary overhead is added.  I fixed
+  the find_slot() code to cache the last fd, and if it's the same on a
+  subsequent call, the search is skipped.
+
+  _open() is VERY suspect, in that remapping of FatFS f_open flags don't
+  correspond cleanly to Unix's open() call.  I handle the four common cases
+  correctly, but lesser used ones may result in a EINVAL errno on open.  
+
+  Opening FatFS files is expensive, RAM space-wise.  Each open file uses a
+  FatFS FIL structure which contains a 512 byte buffer, plus some additional
+  space.  With 32K on a LPC2148, and 20K being used for the FreeRTOS heap, that
+  leaves 12K that has to be used for the stack, heap, printf(), etc.  Don't go
+  wild opening files, and be sure to close unused files to free the space.  Use
+  open() instead of fopen() whenever possible, as the FILE structure has it's
+  own set of buffers.
+
+  There may be a way to figure out how much heap and stack have been used under
+  newlib.  If there is, I haven't figured it out yet.  I'd really like to be
+  able to make a newlib or system call that returns total space available, heap
+  used and stack used. 
+
+  Since stdout and stderr point to same place, it's wise to close stderr and
+  set stderr to stdout.  Only functions like assert() use stderr, so
+  intermixing stderr and stdout shouldn't be a problem.  Especially since
+  there's no redirection of I/O...
+
+
+Header file for LPC2148 (lpc210x.h):
+
+  The original LPC2148 header file was very lacking.  Not only were individual
+  bit fields generally not defined, major peripherials weren't defined.  As a
+  result, FreeRTOS, LPCUSB, FatFS and newlib all used local defines.  Worse,
+  some of these were simply "SOMEREG = (1<<31)".  Great.  What does bit 31 do?
+
+  Personally, I feel the best way is to define structures AND #defines.  It's
+  good that a structure has an element called 'CLK', but setting CLK to 0
+  doesn't give a hint as to what clock mode is being set.  A #define for
+  XXX_YYY_CLK_BIPHASE, then saying XXX_YYY_bits.ClkMode=XXX_YYY_CLK_BIPHASE is
+  a lot clearer.
+
+  I defined a mess of #defines, with the majority matching the names in the
+  datasheet.  There were few that become triplely redundant, such as
+  WD_WDFEED_WDFEED1.  This was reduced to WD_FEED_FEED1.  The characters prior
+  to the first underscore define the module, with the next set the defining the
+  register name.  Subsequent fields define the bit field name, and then
+  possible variations.
+
+  What I don't like about using #defines to define the registers is that the
+  programmer needs to know if the bits being affected need to be AND'ed or
+  OR'ed.  Structures neatly solve this problem, but defining all the structures
+  takes a lot of work (yea, IAR has already done that, but it's not legal to
+  just swipe their nice headers).
+
+  With one exception I'm aware of (in the TODO section), I rewrote all the code
+  that sets registers to use the values in the lpc210x.h file.  
+
+  While I doubt it makes the code more portable (will NXP change block
+  addresses, but leave bits the same?  Probably not), it does make it more
+  readable.  
+
+  One of the last major areas to be completed is to pull the USB protocol
+  engine #defines into lpc210x.h.  These are currently defined in one of the
+  USB header files, and have poor name scoping (does "ACK_STAT" tell you what
+  module or register it applies to?  No.)
+
+
+Software notes:
+
+  All copyrights are by their respective authors.  FreeRTOS is by Richard
+  Barry.  LPCUSB is by Bertrik Sikken.  FatFS is by ChaN, with sections by Joel
+  Winarske.  Other sections of code may have come from the intarweb, and have
+  respective copyrights, indicated or not.  Any code that I personally authored
+  is free for public consumption, unemcumbered by any copyrights, etc (that
+  crap is just too confusing.  BSD? LPGL? GPL3?  Who the hell knows...)
+
+  I've re-formatted a good deal of code in LPCUSB and FatFS.  Some portions
+  were re-written, others simply re-formatted to my coding style (which I
+  jokingly refer to as JC1).  I have occasionally whacked comment blocks that I
+  didn't really think indicated what the code did, or was redundant.  I
+  probably whacked some text with copyrights in the process.  This in no way
+  reflects an attempt to claim the work as my own, or to otherwise dishonor the
+  original authors.  As Isaac Newton (more or less) said, "If I have seen a
+  little further it is by standing on the shoulders of Giants."  Without the
+  work of these most excellent people, this code would not exist.  
+
+  Most of the reason for my re-formatting is my way of understanding the code,
+  going through it section by section.  It's good because I have a better
+  understanding of it, worse because it makes drop-in replacement with updates
+  from the authors more difficult.
+
+  The most affected area is the SPI handling in the FatFS code.  Originally
+  named 'mm_llc_spi1.c', I felt this was not cleanly integrated, so I rewrote
+  it.  Maybe it's not better, but it is different :)
+
+  The FreeRTOS code is almost completely untouched, except for moving an #if
+  around that allowed compiling the trace code (configUSE_TRACE_FACILITY)
+  without requiring the task suspend code (INCLUDE_vTaskSuspend).  In the end,
+  this was probably irrelevant, since I compiled the task suspend code in
+  anyway.
+
+
+Things I wish were different:
+
+  A collection of random little thoughts of things I wish were different.
+  These are just MY opinions, based on the way I do things.  It's not to say
+  the original authors were wrong.  It's just the way I'd make things, if I
+  were smart enough to write this stuff from scratch.  Most people probably
+  shouldn't even read the following list...
+
+  While FreeRTOS attempts to isolate the user from system data structures, it's
+  a little *too* aggressive.  These typedef'ed structures should be in a header
+  file, so applications can at least use sizeof() to help determine memory
+  allocation.  Everything is done through recasted void* pointers.
+
+  It would be neat if FreeRTOS had a xDelayTaskUntil() that also took one or
+  more queues as a blocking item.  I want to run a task every 'n' milliseconds,
+  but if something shows up in a queue, process it early.  Perhaps this could
+  work like Unix's select().  Or perhaps a variadic function that takes
+  xQueueHandles as parameters.
+
+  I dont' care for FreeRTOS's use of portBLAH typedefs for portable types.  The
+  world is pretty used to U8, U16, N32, and BOOL for unsigned char, unsigned
+  short, signed int, etc.  FreeRTOS also seems to require declaring too many
+  things as 'signed', which should be a default.  I'm sure this is done for
+  portability, but I find the types are not as intuitive as they could be.  
+
+  Another minor itch is that all function names and types start with 'x'.  I
+  would have preferred 'freertos', or better, a user-definable one, via a
+  #define macro.  I think programmers forget that their package may be
+  integrated into a larger system, and while their naming convention works well
+  for their purpose, it may not scale well.  FatFS and LPCUSB are guilty of
+  this as well.
+
+  FreeRTOS has a couple errors in several of the modules regarding type
+  punning.  I understand what type punning is, but I don't know how to fix it
+  safely.  Perhaps RB will fix those up in the next release.
+
+  FatFS changes return types too often, particularly for errors.  There's the
+  errors from the SPI routines, the MMC routines, the disk routines, and the
+  top layer FatFS code.  There should be unified errors for everything, so that
+  errors can be cleanly communicated up the stack.
+
+  FatFS can't go from file descriptor to filename.  I haven't figured out a
+  clean and reliable way to map a fd back to a filename (FatFS f_stat() needs a
+  file name).  I thought about malloc()'ing space in the openFiles_t structure
+  and copying the filename when the file is opened.  However, paths can get up
+  to 128 characters, and only _fstat() needs that information.  This seems very
+  wasteful.
+
+  FatFS wants the user to provid the get_fattime() function.  FatFS should
+  really have a file for locally provided functions.  It's already specific to
+  the SPI or IDE port implementation.  As such, it should be stubbed out to
+  return 0 if the function isn't provided, or allow the user to implement in
+  the platform specific file (basically, an equivalent of syscalls.c, but
+  internal to FatFS).
+
+  FatFS has naming conventions that I don't like.  It exposes too many internal
+  function names that should be declared static.  Structure names like 'FIL'
+  are ambiguous, and too likely to collide with other libraries.  Functions
+  should be preceed by the supporting module or library.  All FatFS functions
+  should be in the form of fatfsOpen, fatfsClose, etc.  
+
+  LPCUSB is not organized quite the way I'd do it.  The USB protocol engine
+  defines need to have their names modified and moved into the lpc210x.h. 
+
+  Newlib lacks certain calls on the ARM7 platform.  sync() and chmod() do not
+  exist, while mkdir() does, but wit no corresponding _mkdir() support in
+  syscalls.c.  Returning ENOSYS is easy enough, and doesn't take but a few
+  instructions.  Providing support for a wider range of calls would be good,
+  taking into mind things like FatFS that provide file system support, etc.
+
+  The Olimex board COMPLETELY lacks documentation (at least, that I've been
+  able to find).  It's up to the user to guess what the slide switches are for,
+  etc.  It's probably pretty obvious to someone who's used the LPC2000 parts
+  before, but if you're buying a board to get started, you have to waste time
+  figuring out how to use it.  Even a simple Xerox'ed sheet would have been
+  sufficient.
+
+  The Olimex board also lacks the ability to control the BSL line from the
+  serial port.  Reset works, but without being able to flip the BSL switch,
+  it has little value.
+
+  The buzzer on the Olimex board is useless.  Had it been connected to one of
+  the PWM outputs, some simple sound synthesis would have been possible.  At
+  best, it demostrates you can toggle I/O pins fast enough to make noise.
+  However, unless you want clicks in the output, you have to disable
+  interrupts.  And why *two* port pins?  One would have been sufficient.  I
+  would have preferred to have two more LEDs, rather than the buzzer.
+

@@ -1,0 +1,76 @@
+--
+--  $Id: README 279 2008-11-03 23:51:30Z jcw $
+--  $Revision: 279 $
+--  $Author: jcw $
+--  $Date: 2008-11-03 18:51:30 -0500 (Mon, 03 Nov 2008) $
+--  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/docs/README $
+--
+
+OK, so I haven't quite gotten to drawing the schematics...  So here's the pin
+list.
+
+-------------------- ENC28J60 -------------------- 
+
+I used a in28J60 module from www.modtronix.com.  In retrospect, I should have
+used the Olimex module, as it doesn't have these annoying press fit pins.  As I
+mentioned in the top-level README, the in28J60 module was $5 cheaper, and I
+thought the press fit pins might be useful.  
+
+I ended up de-soldering them and putting pins in similiar to those used on the
+LPC-P2148 board. On the board, I used some female header pins, so I could
+replace the in28J60 module.  This was a good decision, because either the first
+module was bad, or I damaged it.
+
+Module              LPC-P2148
+------------------------------------------------
+Pin X1-1 (GND)      GND on SPI0 pin set
+Pin X1-2 (CS#)      SSEL0 on SPI0 pin set
+Pin X1-3 (CLKOUT)   Not connected
+Pin X1-4 (RST#)     P0.22 near AN_TR
+Pin X1-5 (INT#)     RS1/UEXT pin 3 (nearest UEXT)
+
+Pin X2-1 (Vaux)     Not connected
+Pin X2-2 (Vin)      3.3V on SPI0 pin set
+Pin X2-3 (SCK)      SCK0 on SPIO pin set
+Pin X2-4 (SDO)      MISO on SPI0 pin set
+Pin X2-5 (SDI)      MOSI on SPI0 pin set
+
+
+----------------------  LCD ---------------------- 
+
+I had some CrystalFontz CFAH1602Z-YYH-ET displays left over from a previous
+project.  I made up a small cable that plugged into the LCD and had a 12 pin
+Molex connector on the other end.  The Molex connector plugs straight on to the
+connector next to the SD/MMC card connector, and provides all the signals
+except for the negative bias.  
+
+The bias can be provided through an external supply, or the charge pump circuit
+in the 'biaspump.png' diagram can be built and connected to the output of PWM5
+(P0.25).  The CFAH1602Z-YYH-ET display requires about -1.5V to be really
+readable.
+
+In theory, a AA battery with the POSITIVE terminal connected to GND on the LCD
+and the NEGATIVE terminal connected to V0 should OK contrast.  A proper
+adjustable circuit would, of course, be better.
+
+There are some additional notes in the lcd/README file that may be worth
+looking at.
+
+LCD Module          LPC-P2148
+------------------------------------------------
+Pin  1 (GND)        GND 
+Pin  2 (Vdd)        3.3V
+Pin  3 (V0)         (connect to external negative bias circuit)
+Pin  4 (RS)         P1.20
+Pin  5 (R/W#)       P1.21
+Pin  6 (E)          P1.22
+Pin  7 (DB0)        (not connected for 4-bit interface)
+Pin  8 (DB1)        (not connected for 4-bit interface)
+Pin  9 (DB2)        (not connected for 4-bit interface)
+Pin 10 (DB3)        (not connected for 4-bit interface)
+Pin 11 (DB4)        P1.16
+Pin 12 (DB5)        P1.17
+Pin 13 (DB6)        P1.18
+Pin 14 (DB7)        P1.19
+Pin 15 (LED+)       (4.1V for backlight)
+Pin 16 (LED-)       (GND  for backlight)

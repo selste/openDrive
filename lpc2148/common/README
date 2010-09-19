@@ -1,0 +1,10 @@
+--
+--  $Id: README 279 2008-11-03 23:51:30Z jcw $
+--  $Revision: 279 $
+--  $Author: jcw $
+--  $Date: 2008-11-03 18:51:30 -0500 (Mon, 03 Nov 2008) $
+--  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/common/README $
+--
+
+This README file primarily exists to make sure that tar/zip includes the empty
+directory in the archive, so it doesn't need to be created by hand.

@@ -1,0 +1,41 @@
+To do:
+  [ ] Add Dallas 1-wire
+  [ ] Create schematics for 24LCxxx (24lcxxx.png) and LM75 (lm75.png)
+  [ ] Create schematic for in28J60/ENC28J60
+  [ ] Test MSC code under Linux
+  [ ] ./FreeRTOS/portable/GCC/ARM7_LPC2000/port.c uses local defines for timer control
+  [ ] Some modules (USB) still have local #defines for hardware (protocol engine)
+  [ ] Finish rest of syscalls.c functions (fstat ())
+  [ ] Fix SPI code to be thread safe (what did I mean by that?)
+  [ ] Add firmware update from file system
+
+Done:
+  [X] Make interrupt vectors in RAM a CFG_ option
+  [X] Fix USB to honor connect state (SET_LINE_CODING?)
+  [X] Page write check for AT24C1024
+  [X] Add 25LC512 SPI EEPROM (and check for uIP)
+  [X] Add keyboard code from project-X
+  [X] Check stack usage will all tasks running
+  [X] Add CFG_LCD to Makefile
+  [X] Add SNTP support
+  [X] Add uip-1.0 w/ ENC28J60 ethernet
+  [X] Add PWM demo to channel 5
+  [X] Upgrade FreeRTOS to 4.7.2 (or higher)
+  [X] Add fixes for usbmass
+  [X] Move file commands to 'file' submenu
+  [X] Add LCD code from project-X (leave inactive)
+  [X] Add 'const' keyword to commandList_t vars
+  [X] Add prompt from user submitted code
+  [X] Add sound demo from user submitted code
+  [X] Add -Wno-strict-aliasing to FreeRTOS/Makefile
+  [X] Add -Wno-cast-align to FreeRTOS/Makefile
+  [X] Add -Wno-cast-align to usbmass/Makefile
+  [X] Update boot.s comments from Mortimer/boot.s
+  [X] Remove dead files from i2c directory
+  [X] Update tags target in Makefile
+  [X] Update lpc210x.h from Mortimer
+  [X] Update Makefiles from Mortimer
+  [X] Update usbmass/mmc/fatfs code from Mortimer
+  [X] Interrupt vectors in RAM example
+  [X] Update WinARM Makefile
+  [X] Add data abort demo

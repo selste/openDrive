@@ -1,0 +1,10 @@
+%!: /header.html
+<form name="aForm" action="/led.shtml" method="get">
+<p>
+%! led-io
+</p>
+<p>
+<input type="submit" value="Update LED">
+</p>
+</form>
+%!: /footer.html

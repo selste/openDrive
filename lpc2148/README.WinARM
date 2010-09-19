@@ -1,0 +1,48 @@
+--
+--  $Id: README.WinARM 339 2008-11-10 04:17:24Z jcw $
+--  $Revision: 339 $
+--  $Author: jcw $
+--  $Date: 2008-11-09 23:17:24 -0500 (Sun, 09 Nov 2008) $
+--  $HeadURL: http://tinymicros.com/svn_public/arm/lpc2148_demo/trunk/README.WinARM $
+--
+
+Let me start this off by saying that while I am a long time Windows user, I
+prefer to do my development under Linux, using a shell and vi.  At work I
+generally run Cygwin, so at least my development environment feels a little
+like home.  I've installed the WinARM 20060606 software, but having to use it
+from CMD.EXE is really clunky, and either it's got intrinsic problems, or it's
+just not happy on my machine.
+
+To compile under WinARM, you'll been to edit the top-level Makefile and set the
+ROOT variable to the fully qualified directory where the demo code is.  On my
+machine, I put it at 'c:\lpc2148\LPC2148_Demo'.  Normally, you'd want to set
+'ROOT=$(shell pwd)' and 'make' will figure out where it's running from and be
+happy.  This doesn't seem to work under the WinARM version.
+
+Start the build with 'make -f Makefile.winarm'.  If all goes well, you'll 
+wind up with a file named 'lpc2148.hex', ready to be programmed.  If not, you
+may want to edit the top-level Makefile, comment out the '.SILENT:' line, and
+see where it's exploding.
+
+On my machine, I/O redirection doesn't work, so the '$(OBJDUMP) -d -S
+lpc2148.elf >lpc2148.lst' line is commented out.  If you need a list file, you
+can always run this manually.
+
+The libc.a and libgcc.a files were pulled from the ZIP file that Dan ('profdc9'
+on Yahoo! Groups) supplied in the v1.20 build he created.  I have no idea where
+they came from, or why they work and the ones supplied in the WinARM 20060606
+build appear not to.
+
+One of the tools necessary to execute the 'clean' target don't exist under
+WinARM, namely 'find'.  It's a really good idea to clean out the .depend, .o
+and common.a file if you change the top-level Makefile.WinARM configuration
+options.  I don't know of an easy way to do this.
+
+Other little oddities: I tried running the Makefile under Cygwin, but 'make' is
+complaining there are multiple targets.  The same version (3.81) of 'make' is
+what is on my Linux machine, and it's happy.  WinARM's 'make' is 3.80, and it's
+happy.  I have no idea why the Cygwin 'make' is confused.  Makefiles are not my
+forte, and I usually have to fight my way through them.
+
+Now that I have a semi-working WinARM environment, I will keep the WinARM
+builds in sync with the regular releases.
