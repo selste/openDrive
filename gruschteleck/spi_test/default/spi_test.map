@@ -1,0 +1,398 @@
+Archive member included because of file (symbol)
+
+c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
+                              c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o (exit)
+c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
+                              spi_test.o (__do_copy_data)
+c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
+                              spi_test.o (__do_clear_bss)
+
+Allocating common symbols
+Common symbol       size              file
+
+incoming            0x4               spi_test.o
+outgoing            0x4               spi_test.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+text             0x00000000         0x00020000         xr
+data             0x00800060         0x0000ffa0         rw !x
+eeprom           0x00810000         0x00010000         rw !x
+fuse             0x00820000         0x00000400         rw !x
+lock             0x00830000         0x00000400         rw !x
+signature        0x00840000         0x00000400         rw !x
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+Address of section .data set to 0x800100
+LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+LOAD spi_test.o
+LOAD Globals.o
+LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
+LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5\libc.a
+LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+ *(.rel.text.*)
+ *(.rel.gnu.linkonce.t*)
+
+.rela.text
+ *(.rela.text)
+ *(.rela.text.*)
+ *(.rela.gnu.linkonce.t*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+ *(.rel.rodata.*)
+ *(.rel.gnu.linkonce.r*)
+
+.rela.rodata
+ *(.rela.rodata)
+ *(.rela.rodata.*)
+ *(.rela.gnu.linkonce.r*)
+
+.rel.data
+ *(.rel.data)
+ *(.rel.data.*)
+ *(.rel.gnu.linkonce.d*)
+
+.rela.data
+ *(.rela.data)
+ *(.rela.data.*)
+ *(.rela.gnu.linkonce.d*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x00000000      0x38e
+ *(.vectors)
+ .vectors       0x00000000       0x5c c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+                0x00000000                __vector_default
+                0x00000000                __vectors
+ *(.vectors)
+ *(.progmem.gcc*)
+ *(.progmem*)
+                0x0000005c                . = ALIGN (0x2)
+                0x0000005c                __trampolines_start = .
+ *(.trampolines)
+ .trampolines   0x0000005c        0x0 linker stubs
+ *(.trampolines*)
+                0x0000005c                __trampolines_end = .
+ *(.jumptables)
+ *(.jumptables*)
+ *(.lowtext)
+ *(.lowtext*)
+                0x0000005c                __ctors_start = .
+ *(.ctors)
+                0x0000005c                __ctors_end = .
+                0x0000005c                __dtors_start = .
+ *(.dtors)
+                0x0000005c                __dtors_end = .
+ SORT(*)(.ctors)
+ SORT(*)(.dtors)
+ *(.init0)
+ .init0         0x0000005c        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+                0x0000005c                __init
+ *(.init0)
+ *(.init1)
+ *(.init1)
+ *(.init2)
+ .init2         0x0000005c        0xc c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+ *(.init2)
+ *(.init3)
+ *(.init3)
+ *(.init4)
+ .init4         0x00000068       0x16 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
+                0x00000068                __do_copy_data
+ .init4         0x0000007e       0x10 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
+                0x0000007e                __do_clear_bss
+ *(.init4)
+ *(.init5)
+ *(.init5)
+ *(.init6)
+ *(.init6)
+ *(.init7)
+ *(.init7)
+ *(.init8)
+ *(.init8)
+ *(.init9)
+ .init9         0x0000008e        0x8 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+ *(.init9)
+ *(.text)
+ .text          0x00000096        0x4 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+                0x00000096                __vector_22
+                0x00000096                __vector_1
+                0x00000096                __vector_12
+                0x00000096                __bad_interrupt
+                0x00000096                __vector_6
+                0x00000096                __vector_3
+                0x00000096                __vector_11
+                0x00000096                __vector_13
+                0x00000096                __vector_17
+                0x00000096                __vector_19
+                0x00000096                __vector_7
+                0x00000096                __vector_5
+                0x00000096                __vector_4
+                0x00000096                __vector_9
+                0x00000096                __vector_2
+                0x00000096                __vector_21
+                0x00000096                __vector_15
+                0x00000096                __vector_8
+                0x00000096                __vector_14
+                0x00000096                __vector_10
+                0x00000096                __vector_16
+                0x00000096                __vector_18
+                0x00000096                __vector_20
+ .text          0x0000009a      0x2f0 spi_test.o
+                0x0000009a                Init_SPI
+                0x000000a4                read_write_spi
+                0x000000b0                Send428
+                0x000000de                ReadWriteSPI4
+                0x00000108                ReadWrite428
+                0x00000112                Write428Long
+                0x0000015e                Write428Int
+                0x00000180                Write428Bytes
+                0x000001a2                SetAMax
+                0x000002a8                Init428
+                0x00000364                main
+ .text          0x0000038a        0x0 Globals.o
+ .text          0x0000038a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
+ .text          0x0000038a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
+ .text          0x0000038a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
+                0x0000038a                . = ALIGN (0x2)
+ *(.text.*)
+ .text.libgcc   0x0000038a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
+ .text.libgcc   0x0000038a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc   0x0000038a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
+                0x0000038a                . = ALIGN (0x2)
+ *(.fini9)
+ .fini9         0x0000038a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
+                0x0000038a                _exit
+                0x0000038a                exit
+ *(.fini9)
+ *(.fini8)
+ *(.fini8)
+ *(.fini7)
+ *(.fini7)
+ *(.fini6)
+ *(.fini6)
+ *(.fini5)
+ *(.fini5)
+ *(.fini4)
+ *(.fini4)
+ *(.fini3)
+ *(.fini3)
+ *(.fini2)
+ *(.fini2)
+ *(.fini1)
+ *(.fini1)
+ *(.fini0)
+ .fini0         0x0000038a        0x4 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
+ *(.fini0)
+                0x0000038e                _etext = .
+
+.data           0x00800100       0x96 load address 0x0000038e
+                0x00800100                PROVIDE (__data_start, .)
+ *(.data)
+ .data          0x00800100        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+ .data          0x00800100       0x80 spi_test.o
+                0x00800100                driver_table
+ .data          0x00800180       0x15 Globals.o
+                0x00800180                ModuleConfig
+                0x00800183                MotorConfig
+ .data          0x00800195        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
+ .data          0x00800195        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
+ .data          0x00800195        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
+ *(.data*)
+ *(.rodata)
+ *(.rodata*)
+ *(.gnu.linkonce.d*)
+                0x00800196                . = ALIGN (0x2)
+ *fill*         0x00800195        0x1 00
+                0x00800196                _edata = .
+                0x00800196                PROVIDE (__data_end, .)
+
+.bss            0x00800196        0x8
+                0x00800196                PROVIDE (__bss_start, .)
+ *(.bss)
+ .bss           0x00800196        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+ .bss           0x00800196        0x0 spi_test.o
+ .bss           0x00800196        0x0 Globals.o
+ .bss           0x00800196        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_exit.o)
+ .bss           0x00800196        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_copy_data.o)
+ .bss           0x00800196        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/avr5\libgcc.a(_clear_bss.o)
+ *(.bss*)
+ *(COMMON)
+ COMMON         0x00800196        0x8 spi_test.o
+                0x00800196                incoming
+                0x0080019a                outgoing
+                0x0080019e                PROVIDE (__bss_end, .)
+                0x0000038e                __data_load_start = LOADADDR (.data)
+                0x00000424                __data_load_end = (__data_load_start + SIZEOF (.data))
+
+.noinit         0x0080019e        0x0
+                0x0080019e                PROVIDE (__noinit_start, .)
+ *(.noinit*)
+                0x0080019e                PROVIDE (__noinit_end, .)
+                0x0080019e                _end = .
+                0x0080019e                PROVIDE (__heap_start, .)
+
+.eeprom         0x00810000        0x0
+ *(.eeprom*)
+                0x00810000                __eeprom_end = .
+
+.fuse
+ *(.fuse)
+ *(.lfuse)
+ *(.hfuse)
+ *(.efuse)
+
+.lock
+ *(.lock*)
+
+.signature
+ *(.signature*)
+
+.stab           0x00000000      0x6cc
+ *(.stab)
+ .stab          0x00000000      0x6cc c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+
+.stabstr        0x00000000       0x85
+ *(.stabstr)
+ .stabstr       0x00000000       0x85 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.4.3/../../../../avr/lib/avr5/crtm169p.o
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment
+ *(.comment)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000       0x20
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x20 spi_test.o
+
+.debug_pubnames
+                0x00000000      0x113
+ *(.debug_pubnames)
+ .debug_pubnames
+                0x00000000       0xe0 spi_test.o
+ .debug_pubnames
+                0x000000e0       0x33 Globals.o
+
+.debug_info     0x00000000      0x638
+ *(.debug_info)
+ .debug_info    0x00000000      0x503 spi_test.o
+ .debug_info    0x00000503      0x135 Globals.o
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev   0x00000000      0x2de
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000      0x25f spi_test.o
+ .debug_abbrev  0x0000025f       0x7f Globals.o
+
+.debug_line     0x00000000      0x58e
+ *(.debug_line)
+ .debug_line    0x00000000      0x4c5 spi_test.o
+ .debug_line    0x000004c5       0xc9 Globals.o
+
+.debug_frame    0x00000000       0xc0
+ *(.debug_frame)
+ .debug_frame   0x00000000       0xc0 spi_test.o
+
+.debug_str      0x00000000      0x1fc
+ *(.debug_str)
+ .debug_str     0x00000000      0x1ad spi_test.o
+                                0x20a (size before relaxing)
+ .debug_str     0x000001ad       0x4f Globals.o
+                                0x14c (size before relaxing)
+
+.debug_loc      0x00000000      0x1ab
+ *(.debug_loc)
+ .debug_loc     0x00000000      0x1ab spi_test.o
+
+.debug_macinfo
+ *(.debug_macinfo)
+OUTPUT(spi_test.elf elf32-avr)
+LOAD linker stubs

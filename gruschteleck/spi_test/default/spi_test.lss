@@ -1,0 +1,746 @@
+
+spi_test.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000096  00800100  0000038e  00000422  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         0000038e  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000008  00800196  00800196  000004b8  2**0
+                  ALLOC
+  3 .stab         000006cc  00000000  00000000  000004b8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  4 .stabstr      00000085  00000000  00000000  00000b84  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_aranges 00000020  00000000  00000000  00000c09  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_pubnames 00000113  00000000  00000000  00000c29  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_info   00000638  00000000  00000000  00000d3c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_abbrev 000002de  00000000  00000000  00001374  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   0000058e  00000000  00000000  00001652  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_frame  000000c0  00000000  00000000  00001be0  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    000001fc  00000000  00000000  00001ca0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_loc    000001ab  00000000  00000000  00001e9c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2e 00 	jmp	0x5c	; 0x5c <__ctors_end>
+   4:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+   8:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+   c:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  10:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  14:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  18:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  1c:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  20:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  24:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  28:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  2c:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  30:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  34:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  38:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  3c:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  40:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  44:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  48:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  4c:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  50:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  54:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+  58:	0c 94 4b 00 	jmp	0x96	; 0x96 <__bad_interrupt>
+
+0000005c <__ctors_end>:
+  5c:	11 24       	eor	r1, r1
+  5e:	1f be       	out	0x3f, r1	; 63
+  60:	cf ef       	ldi	r28, 0xFF	; 255
+  62:	d4 e0       	ldi	r29, 0x04	; 4
+  64:	de bf       	out	0x3e, r29	; 62
+  66:	cd bf       	out	0x3d, r28	; 61
+
+00000068 <__do_copy_data>:
+  68:	11 e0       	ldi	r17, 0x01	; 1
+  6a:	a0 e0       	ldi	r26, 0x00	; 0
+  6c:	b1 e0       	ldi	r27, 0x01	; 1
+  6e:	ee e8       	ldi	r30, 0x8E	; 142
+  70:	f3 e0       	ldi	r31, 0x03	; 3
+  72:	02 c0       	rjmp	.+4      	; 0x78 <__do_copy_data+0x10>
+  74:	05 90       	lpm	r0, Z+
+  76:	0d 92       	st	X+, r0
+  78:	a6 39       	cpi	r26, 0x96	; 150
+  7a:	b1 07       	cpc	r27, r17
+  7c:	d9 f7       	brne	.-10     	; 0x74 <__do_copy_data+0xc>
+
+0000007e <__do_clear_bss>:
+  7e:	11 e0       	ldi	r17, 0x01	; 1
+  80:	a6 e9       	ldi	r26, 0x96	; 150
+  82:	b1 e0       	ldi	r27, 0x01	; 1
+  84:	01 c0       	rjmp	.+2      	; 0x88 <.do_clear_bss_start>
+
+00000086 <.do_clear_bss_loop>:
+  86:	1d 92       	st	X+, r1
+
+00000088 <.do_clear_bss_start>:
+  88:	ae 39       	cpi	r26, 0x9E	; 158
+  8a:	b1 07       	cpc	r27, r17
+  8c:	e1 f7       	brne	.-8      	; 0x86 <.do_clear_bss_loop>
+  8e:	0e 94 b2 01 	call	0x364	; 0x364 <main>
+  92:	0c 94 c5 01 	jmp	0x38a	; 0x38a <_exit>
+
+00000096 <__bad_interrupt>:
+  96:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000009a <Init_SPI>:
+};
+
+void Init_SPI(void)
+{
+	/* Set MISO, SCK, SS as output, all others input */
+	DDR_SPI   = (1<<MOSI) | (1<<SCK) | (1<<SS);
+  9a:	87 e0       	ldi	r24, 0x07	; 7
+  9c:	84 b9       	out	0x04, r24	; 4
+
+	/* Enable SPI, Master, CPOL=1, CPHA=1 Setup (Falling) Sample (Rising), set clock rate fck/16 */
+	SPCR      = (1<<SPE) | (1<<MSTR) | (1<<CPOL) | (1<<CPHA)  | (1<<SPR0);
+  9e:	8d e5       	ldi	r24, 0x5D	; 93
+  a0:	8c bd       	out	0x2c, r24	; 44
+}
+  a2:	08 95       	ret
+
+000000a4 <read_write_spi>:
+	//the following things:
+  	// Send the contents of "writebyte" to the TCM428 via the SPI interface
+  	// (MSB first!!!!!!!!!!!).
+  	// Return the byte that has been written back from the TMC428.
+
+  	SPDR = writebyte;
+  a4:	8e bd       	out	0x2e, r24	; 46
+  	/* Wait for transmission complete */
+  	while(!(SPSR & (1<<SPIF)));
+  a6:	0d b4       	in	r0, 0x2d	; 45
+  a8:	07 fe       	sbrs	r0, 7
+  aa:	fd cf       	rjmp	.-6      	; 0xa6 <read_write_spi+0x2>
+
+  	return SPDR;
+  ac:	8e b5       	in	r24, 0x2e	; 46
+}
+  ae:	08 95       	ret
+
+000000b0 <Send428>:
+  Purpose: Send four Bytes to the TMC428
+  Parameter:    a,b,c,d: the bytes that are to be written
+*****************************************************************/ 
+void Send428(uint8_t a, uint8_t b, uint8_t c, uint8_t d)
+{
+  	SELECT_428();			//Set the nCS line of the TMC428 low (controller specific).
+  b0:	28 98       	cbi	0x05, 0	; 5
+	//the following things:
+  	// Send the contents of "writebyte" to the TCM428 via the SPI interface
+  	// (MSB first!!!!!!!!!!!).
+  	// Return the byte that has been written back from the TMC428.
+
+  	SPDR = writebyte;
+  b2:	8e bd       	out	0x2e, r24	; 46
+  	/* Wait for transmission complete */
+  	while(!(SPSR & (1<<SPIF)));
+  b4:	0d b4       	in	r0, 0x2d	; 45
+  b6:	07 fe       	sbrs	r0, 7
+  b8:	fd cf       	rjmp	.-6      	; 0xb4 <Send428+0x4>
+
+  	return SPDR;
+  ba:	8e b5       	in	r24, 0x2e	; 46
+	//the following things:
+  	// Send the contents of "writebyte" to the TCM428 via the SPI interface
+  	// (MSB first!!!!!!!!!!!).
+  	// Return the byte that has been written back from the TMC428.
+
+  	SPDR = writebyte;
+  bc:	6e bd       	out	0x2e, r22	; 46
+  	/* Wait for transmission complete */
+  	while(!(SPSR & (1<<SPIF)));
+  be:	0d b4       	in	r0, 0x2d	; 45
+  c0:	07 fe       	sbrs	r0, 7
+  c2:	fd cf       	rjmp	.-6      	; 0xbe <Send428+0xe>
+
+  	return SPDR;
+  c4:	8e b5       	in	r24, 0x2e	; 46
+	//the following things:
+  	// Send the contents of "writebyte" to the TCM428 via the SPI interface
+  	// (MSB first!!!!!!!!!!!).
+  	// Return the byte that has been written back from the TMC428.
+
+  	SPDR = writebyte;
+  c6:	4e bd       	out	0x2e, r20	; 46
+  	/* Wait for transmission complete */
+  	while(!(SPSR & (1<<SPIF)));
+  c8:	0d b4       	in	r0, 0x2d	; 45
+  ca:	07 fe       	sbrs	r0, 7
+  cc:	fd cf       	rjmp	.-6      	; 0xc8 <Send428+0x18>
+
+  	return SPDR;
+  ce:	8e b5       	in	r24, 0x2e	; 46
+	//the following things:
+  	// Send the contents of "writebyte" to the TCM428 via the SPI interface
+  	// (MSB first!!!!!!!!!!!).
+  	// Return the byte that has been written back from the TMC428.
+
+  	SPDR = writebyte;
+  d0:	2e bd       	out	0x2e, r18	; 46
+  	/* Wait for transmission complete */
+  	while(!(SPSR & (1<<SPIF)));
+  d2:	0d b4       	in	r0, 0x2d	; 45
+  d4:	07 fe       	sbrs	r0, 7
+  d6:	fd cf       	rjmp	.-6      	; 0xd2 <Send428+0x22>
+
+  	return SPDR;
+  d8:	8e b5       	in	r24, 0x2e	; 46
+  	SELECT_428();			//Set the nCS line of the TMC428 low (controller specific).
+  	read_write_spi(a);
+  	read_write_spi(b);
+  	read_write_spi(c);
+  	read_write_spi(d);
+  	DESELECT_428();	    	//Set the nCS line of the TMC428 high (controller specific).
+  da:	28 9a       	sbi	0x05, 0	; 5
+}
+  dc:	08 95       	ret
+
+000000de <ReadWriteSPI4>:
+
+   Purpose: SPI communication with the TMC428. Four bytes are sent
+            and received.
+********************************************************************/
+void ReadWriteSPI4(uint8_t *incoming, uint8_t *outgoing)
+{
+  de:	20 e0       	ldi	r18, 0x00	; 0
+  e0:	30 e0       	ldi	r19, 0x00	; 0
+  uint8_t i;
+
+  for(i=0; i<4; i++)
+  {
+    SPDR=outgoing[i];
+  e2:	fb 01       	movw	r30, r22
+  e4:	e2 0f       	add	r30, r18
+  e6:	f3 1f       	adc	r31, r19
+  e8:	40 81       	ld	r20, Z
+  ea:	4e bd       	out	0x2e, r20	; 46
+	while(!(SPSR & (1<<SPIF)));
+  ec:	0d b4       	in	r0, 0x2d	; 45
+  ee:	07 fe       	sbrs	r0, 7
+  f0:	fd cf       	rjmp	.-6      	; 0xec <ReadWriteSPI4+0xe>
+    incoming[i]=SPDR;
+  f2:	4e b5       	in	r20, 0x2e	; 46
+  f4:	fc 01       	movw	r30, r24
+  f6:	e2 0f       	add	r30, r18
+  f8:	f3 1f       	adc	r31, r19
+  fa:	40 83       	st	Z, r20
+  fc:	2f 5f       	subi	r18, 0xFF	; 255
+  fe:	3f 4f       	sbci	r19, 0xFF	; 255
+********************************************************************/
+void ReadWriteSPI4(uint8_t *incoming, uint8_t *outgoing)
+{
+  uint8_t i;
+
+  for(i=0; i<4; i++)
+ 100:	24 30       	cpi	r18, 0x04	; 4
+ 102:	31 05       	cpc	r19, r1
+ 104:	71 f7       	brne	.-36     	; 0xe2 <ReadWriteSPI4+0x4>
+  {
+    SPDR=outgoing[i];
+	while(!(SPSR & (1<<SPIF)));
+    incoming[i]=SPDR;
+  }
+}
+ 106:	08 95       	ret
+
+00000108 <ReadWrite428>:
+   Purpose: SPI communication with the TMC428. Four bytes are sent
+            and received.
+********************************************************************/
+void ReadWrite428(uint8_t *Read, uint8_t *Write)
+{
+  SELECT_428();
+ 108:	28 98       	cbi	0x05, 0	; 5
+  ReadWriteSPI4(Read, Write);
+ 10a:	0e 94 6f 00 	call	0xde	; 0xde <ReadWriteSPI4>
+  DESELECT_428();
+ 10e:	28 9a       	sbi	0x05, 0	; 5
+}
+ 110:	08 95       	ret
+
+00000112 <Write428Long>:
+   Return value: ---
+
+   Purpose: Write a long (24 bit) value into a TMC428 register.
+********************************************************************/
+void Write428Long(uint8_t Addr, int32_t Value)
+{
+ 112:	df 93       	push	r29
+ 114:	cf 93       	push	r28
+ 116:	00 d0       	rcall	.+0      	; 0x118 <Write428Long+0x6>
+ 118:	00 d0       	rcall	.+0      	; 0x11a <Write428Long+0x8>
+ 11a:	cd b7       	in	r28, 0x3d	; 61
+ 11c:	de b7       	in	r29, 0x3e	; 62
+ 11e:	49 83       	std	Y+1, r20	; 0x01
+ 120:	5a 83       	std	Y+2, r21	; 0x02
+ 122:	6b 83       	std	Y+3, r22	; 0x03
+ 124:	7c 83       	std	Y+4, r23	; 0x04
+  outgoing[0]=Addr;
+ 126:	80 93 9a 01 	sts	0x019A, r24
+  outgoing[1]=BYTE2(Value);
+ 12a:	fe 01       	movw	r30, r28
+ 12c:	31 96       	adiw	r30, 0x01	; 1
+ 12e:	82 81       	ldd	r24, Z+2	; 0x02
+ 130:	80 93 9b 01 	sts	0x019B, r24
+  outgoing[2]=BYTE1(Value);
+ 134:	81 81       	ldd	r24, Z+1	; 0x01
+ 136:	80 93 9c 01 	sts	0x019C, r24
+  outgoing[3]=BYTE0(Value);
+ 13a:	89 81       	ldd	r24, Y+1	; 0x01
+ 13c:	80 93 9d 01 	sts	0x019D, r24
+
+  SELECT_428();
+ 140:	28 98       	cbi	0x05, 0	; 5
+  ReadWriteSPI4(incoming, outgoing);
+ 142:	86 e9       	ldi	r24, 0x96	; 150
+ 144:	91 e0       	ldi	r25, 0x01	; 1
+ 146:	6a e9       	ldi	r22, 0x9A	; 154
+ 148:	71 e0       	ldi	r23, 0x01	; 1
+ 14a:	0e 94 6f 00 	call	0xde	; 0xde <ReadWriteSPI4>
+  DESELECT_428();
+ 14e:	28 9a       	sbi	0x05, 0	; 5
+}
+ 150:	0f 90       	pop	r0
+ 152:	0f 90       	pop	r0
+ 154:	0f 90       	pop	r0
+ 156:	0f 90       	pop	r0
+ 158:	cf 91       	pop	r28
+ 15a:	df 91       	pop	r29
+ 15c:	08 95       	ret
+
+0000015e <Write428Int>:
+   With registers containing less than 16 bits the highest bits
+   will be lost.
+********************************************************************/
+void Write428Int(uint8_t Addr, int16_t Value)
+{
+  outgoing[0]=Addr;
+ 15e:	80 93 9a 01 	sts	0x019A, r24
+  outgoing[1]=0;
+ 162:	10 92 9b 01 	sts	0x019B, r1
+  outgoing[2]=Value >> 8;
+ 166:	70 93 9c 01 	sts	0x019C, r23
+  outgoing[3]=Value & 0xff;
+ 16a:	60 93 9d 01 	sts	0x019D, r22
+
+  SELECT_428();
+ 16e:	28 98       	cbi	0x05, 0	; 5
+  ReadWriteSPI4(incoming, outgoing);
+ 170:	86 e9       	ldi	r24, 0x96	; 150
+ 172:	91 e0       	ldi	r25, 0x01	; 1
+ 174:	6a e9       	ldi	r22, 0x9A	; 154
+ 176:	71 e0       	ldi	r23, 0x01	; 1
+ 178:	0e 94 6f 00 	call	0xde	; 0xde <ReadWriteSPI4>
+  DESELECT_428();
+ 17c:	28 9a       	sbi	0x05, 0	; 5
+}
+ 17e:	08 95       	ret
+
+00000180 <Write428Bytes>:
+   Purpose: Write four bytes to the TMC428. The result can be
+   found in the array "incoming".
+********************************************************************/
+void Write428Bytes(uint8_t a, uint8_t b, uint8_t c, uint8_t d)
+{
+  outgoing[0]=a;
+ 180:	80 93 9a 01 	sts	0x019A, r24
+  outgoing[1]=b;
+ 184:	60 93 9b 01 	sts	0x019B, r22
+  outgoing[2]=c;
+ 188:	40 93 9c 01 	sts	0x019C, r20
+  outgoing[3]=d;
+ 18c:	20 93 9d 01 	sts	0x019D, r18
+
+  SELECT_428();
+ 190:	28 98       	cbi	0x05, 0	; 5
+  ReadWriteSPI4(incoming, outgoing);
+ 192:	86 e9       	ldi	r24, 0x96	; 150
+ 194:	91 e0       	ldi	r25, 0x01	; 1
+ 196:	6a e9       	ldi	r22, 0x9A	; 154
+ 198:	71 e0       	ldi	r23, 0x01	; 1
+ 19a:	0e 94 6f 00 	call	0xde	; 0xde <ReadWriteSPI4>
+  DESELECT_428();
+ 19e:	28 9a       	sbi	0x05, 0	; 5
+}
+ 1a0:	08 95       	ret
+
+000001a2 <SetAMax>:
+   Purpose: Set the maximum acceleration value of one axis and
+            calculate the PMUL/PDIV parameters accordingly
+            (without the need for using floating point arithmetics).
+********************************************************************/
+int8_t SetAMax(uint8_t Axis, uint16_t AMax)
+{
+ 1a2:	cf 92       	push	r12
+ 1a4:	df 92       	push	r13
+ 1a6:	ef 92       	push	r14
+ 1a8:	ff 92       	push	r15
+ 1aa:	0f 93       	push	r16
+ 1ac:	1f 93       	push	r17
+ 1ae:	df 93       	push	r29
+ 1b0:	cf 93       	push	r28
+ 1b2:	cd b7       	in	r28, 0x3d	; 61
+ 1b4:	de b7       	in	r29, 0x3e	; 62
+ 1b6:	28 97       	sbiw	r28, 0x08	; 8
+ 1b8:	0f b6       	in	r0, 0x3f	; 63
+ 1ba:	f8 94       	cli
+ 1bc:	de bf       	out	0x3e, r29	; 62
+ 1be:	0f be       	out	0x3f, r0	; 63
+ 1c0:	cd bf       	out	0x3d, r28	; 61
+ 1c2:	7b 01       	movw	r14, r22
+  int16_t pm;
+  int8_t pd;
+  uint8_t smda;
+  uint8_t Read428[4], Write428[4];
+
+  smda = Axis << 5;
+ 1c4:	18 2f       	mov	r17, r24
+ 1c6:	12 95       	swap	r17
+ 1c8:	11 0f       	add	r17, r17
+ 1ca:	10 7e       	andi	r17, 0xE0	; 224
+
+  Write428[0] = ( smda | IDX_PULSEDIV_RAMPDIV | TMC428_READ);
+ 1cc:	81 2f       	mov	r24, r17
+ 1ce:	89 61       	ori	r24, 0x19	; 25
+ 1d0:	8d 83       	std	Y+5, r24	; 0x05
+  ReadWrite428(Read428, Write428);
+ 1d2:	ce 01       	movw	r24, r28
+ 1d4:	01 96       	adiw	r24, 0x01	; 1
+ 1d6:	be 01       	movw	r22, r28
+ 1d8:	6b 5f       	subi	r22, 0xFB	; 251
+ 1da:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1dc:	0e 94 84 00 	call	0x108	; 0x108 <ReadWrite428>
+
+  if(AMax & 0xF800) return -1;   //check if AMax is in the range 0...2047
+ 1e0:	c7 01       	movw	r24, r14
+ 1e2:	80 70       	andi	r24, 0x00	; 0
+ 1e4:	98 7f       	andi	r25, 0xF8	; 248
+ 1e6:	00 97       	sbiw	r24, 0x00	; 0
+ 1e8:	11 f0       	breq	.+4      	; 0x1ee <SetAMax+0x4c>
+ 1ea:	8f ef       	ldi	r24, 0xFF	; 255
+ 1ec:	4e c0       	rjmp	.+156    	; 0x28a <SetAMax+0xe8>
+
+  pm = AMax;
+ 1ee:	67 01       	movw	r12, r14
+  //pd=4 +          rampdiv         -       pulsediv;
+  pd = 4 + ( Read428 [ 2 ] & 0x0f ) - ( Read428 [ 2 ] >> 4 );
+ 1f0:	8b 81       	ldd	r24, Y+3	; 0x03
+ 1f2:	08 2f       	mov	r16, r24
+ 1f4:	0f 70       	andi	r16, 0x0F	; 15
+ 1f6:	0c 5f       	subi	r16, 0xFC	; 252
+ 1f8:	82 95       	swap	r24
+ 1fa:	8f 70       	andi	r24, 0x0F	; 15
+ 1fc:	08 1b       	sub	r16, r24
+
+  if ( pm > 255 )
+ 1fe:	8f ef       	ldi	r24, 0xFF	; 255
+ 200:	e8 16       	cp	r14, r24
+ 202:	f1 04       	cpc	r15, r1
+ 204:	e1 f0       	breq	.+56     	; 0x23e <SetAMax+0x9c>
+ 206:	dc f0       	brlt	.+54     	; 0x23e <SetAMax+0x9c>
+  {
+    do
+    {
+      if(pd<=0)
+ 208:	10 16       	cp	r1, r16
+ 20a:	84 f0       	brlt	.+32     	; 0x22c <SetAMax+0x8a>
+      {  //(first) check for pd limit
+        //write AMax, pm&pd to 428
+        Write428Bytes( smda | IDX_AMAX, 0, (uint16_t) AMax >> 8, AMax & 0x00ff );
+ 20c:	81 2f       	mov	r24, r17
+ 20e:	8c 60       	ori	r24, 0x0C	; 12
+ 210:	60 e0       	ldi	r22, 0x00	; 0
+ 212:	4f 2d       	mov	r20, r15
+ 214:	2e 2d       	mov	r18, r14
+ 216:	0e 94 c0 00 	call	0x180	; 0x180 <Write428Bytes>
+        Write428Bytes( smda | IDX_PMUL_PDIV, 0, 0x7f, 0 );
+ 21a:	81 2f       	mov	r24, r17
+ 21c:	82 61       	ori	r24, 0x12	; 18
+ 21e:	60 e0       	ldi	r22, 0x00	; 0
+ 220:	4f e7       	ldi	r20, 0x7F	; 127
+ 222:	20 e0       	ldi	r18, 0x00	; 0
+ 224:	0e 94 c0 00 	call	0x180	; 0x180 <Write428Bytes>
+ 228:	81 e0       	ldi	r24, 0x01	; 1
+        return 1;
+ 22a:	2f c0       	rjmp	.+94     	; 0x28a <SetAMax+0xe8>
+      }
+      //shift (until hibyte of pm is zero)
+      pm >>= 1;
+ 22c:	d5 94       	asr	r13
+ 22e:	c7 94       	ror	r12
+      pd--;
+ 230:	01 50       	subi	r16, 0x01	; 1
+    } while ( pm > 255  ); //check if hibyte of pm still "contains 1s"
+ 232:	8f ef       	ldi	r24, 0xFF	; 255
+ 234:	c8 16       	cp	r12, r24
+ 236:	d1 04       	cpc	r13, r1
+ 238:	09 f0       	breq	.+2      	; 0x23c <SetAMax+0x9a>
+ 23a:	34 f7       	brge	.-52     	; 0x208 <SetAMax+0x66>
+ 23c:	17 c0       	rjmp	.+46     	; 0x26c <SetAMax+0xca>
+  }
+  else
+  {
+    do
+    {
+      if(pd>=13)
+ 23e:	0d 30       	cpi	r16, 0x0D	; 13
+ 240:	84 f0       	brlt	.+32     	; 0x262 <SetAMax+0xc0>
+      { //(first) check for pd limit
+        //write AMax, pm&pd to 428
+        Write428Bytes( smda | IDX_AMAX, 0, (uint16_t) AMax >> 8, AMax & 0x00ff );
+ 242:	81 2f       	mov	r24, r17
+ 244:	8c 60       	ori	r24, 0x0C	; 12
+ 246:	60 e0       	ldi	r22, 0x00	; 0
+ 248:	4f 2d       	mov	r20, r15
+ 24a:	2e 2d       	mov	r18, r14
+ 24c:	0e 94 c0 00 	call	0x180	; 0x180 <Write428Bytes>
+        Write428Bytes( smda | IDX_PMUL_PDIV, 0, 0, 13 );
+ 250:	81 2f       	mov	r24, r17
+ 252:	82 61       	ori	r24, 0x12	; 18
+ 254:	60 e0       	ldi	r22, 0x00	; 0
+ 256:	40 e0       	ldi	r20, 0x00	; 0
+ 258:	2d e0       	ldi	r18, 0x0D	; 13
+ 25a:	0e 94 c0 00 	call	0x180	; 0x180 <Write428Bytes>
+ 25e:	82 e0       	ldi	r24, 0x02	; 2
+        return 2;
+ 260:	14 c0       	rjmp	.+40     	; 0x28a <SetAMax+0xe8>
+      }
+      //shift until MSB of lobyte of pm is 1
+      pm <<= 1;
+ 262:	cc 0c       	add	r12, r12
+ 264:	dd 1c       	adc	r13, r13
+      pd++;
+ 266:	0f 5f       	subi	r16, 0xFF	; 255
+    } while ( !( pm & 0x0080 ) ); //check if MSB of lobyte is (already) 1
+ 268:	c7 fe       	sbrs	r12, 7
+ 26a:	e9 cf       	rjmp	.-46     	; 0x23e <SetAMax+0x9c>
+    //MSB of lobyte must be "1" because we started with AMax > 1
+  }
+  //write AMax, pm&pd to 428
+  Write428Bytes( smda | IDX_AMAX, 0, (uint16_t) AMax >> 8, AMax & 0x00ff );
+ 26c:	81 2f       	mov	r24, r17
+ 26e:	8c 60       	ori	r24, 0x0C	; 12
+ 270:	60 e0       	ldi	r22, 0x00	; 0
+ 272:	4f 2d       	mov	r20, r15
+ 274:	2e 2d       	mov	r18, r14
+ 276:	0e 94 c0 00 	call	0x180	; 0x180 <Write428Bytes>
+  Write428Bytes( smda | IDX_PMUL_PDIV, 0, (uint8_t) pm, pd );
+ 27a:	81 2f       	mov	r24, r17
+ 27c:	82 61       	ori	r24, 0x12	; 18
+ 27e:	60 e0       	ldi	r22, 0x00	; 0
+ 280:	4c 2d       	mov	r20, r12
+ 282:	20 2f       	mov	r18, r16
+ 284:	0e 94 c0 00 	call	0x180	; 0x180 <Write428Bytes>
+ 288:	80 e0       	ldi	r24, 0x00	; 0
+  return 0;
+}
+ 28a:	28 96       	adiw	r28, 0x08	; 8
+ 28c:	0f b6       	in	r0, 0x3f	; 63
+ 28e:	f8 94       	cli
+ 290:	de bf       	out	0x3e, r29	; 62
+ 292:	0f be       	out	0x3f, r0	; 63
+ 294:	cd bf       	out	0x3d, r28	; 61
+ 296:	cf 91       	pop	r28
+ 298:	df 91       	pop	r29
+ 29a:	1f 91       	pop	r17
+ 29c:	0f 91       	pop	r16
+ 29e:	ff 90       	pop	r15
+ 2a0:	ef 90       	pop	r14
+ 2a2:	df 90       	pop	r13
+ 2a4:	cf 90       	pop	r12
+ 2a6:	08 95       	ret
+
+000002a8 <Init428>:
+/*************************************************************
+  Function:  Send428
+  Purpose: Initialize the TMC428
+**************************************************************/ 
+void Init428(void)
+{
+ 2a8:	0f 93       	push	r16
+ 2aa:	1f 93       	push	r17
+ 2ac:	cf 93       	push	r28
+ 2ae:	df 93       	push	r29
+ 2b0:	00 e0       	ldi	r16, 0x00	; 0
+ 2b2:	11 e0       	ldi	r17, 0x01	; 1
+ 2b4:	c0 e8       	ldi	r28, 0x80	; 128
+ 2b6:	d0 e0       	ldi	r29, 0x00	; 0
+  	int16_t i;
+  
+  	//Write the driver configuration data to the TMC428.
+  	//This is the most important part of the intialization and should be done first of all!
+  	for(i=128; i<256; i+=2)
+    	Send428(i, 0, driver_table[i-127], driver_table[i-128]);
+ 2b8:	8c 2f       	mov	r24, r28
+ 2ba:	60 e0       	ldi	r22, 0x00	; 0
+ 2bc:	f8 01       	movw	r30, r16
+ 2be:	41 81       	ldd	r20, Z+1	; 0x01
+ 2c0:	20 81       	ld	r18, Z
+ 2c2:	0e 94 58 00 	call	0xb0	; 0xb0 <Send428>
+{
+  	int16_t i;
+  
+  	//Write the driver configuration data to the TMC428.
+  	//This is the most important part of the intialization and should be done first of all!
+  	for(i=128; i<256; i+=2)
+ 2c6:	22 96       	adiw	r28, 0x02	; 2
+ 2c8:	0e 5f       	subi	r16, 0xFE	; 254
+ 2ca:	1f 4f       	sbci	r17, 0xFF	; 255
+ 2cc:	f1 e0       	ldi	r31, 0x01	; 1
+ 2ce:	c0 30       	cpi	r28, 0x00	; 0
+ 2d0:	df 07       	cpc	r29, r31
+ 2d2:	91 f7       	brne	.-28     	; 0x2b8 <Init428+0x10>
+    	Send428(i, 0, driver_table[i-127], driver_table[i-128]);
+
+  	//Set the "Stepper Motor Global Parameter"-Registers (SMGP).
+  	//Set SPI_CONTINUOS_UPDATE  and PoFD, SPI_CLKDIV=7
+
+  	Send428(IDX_SMGP, 0x01, 0x07, 0x20); // LSMD = 0 (which means 1 motor!)
+ 2d4:	8e e7       	ldi	r24, 0x7E	; 126
+ 2d6:	61 e0       	ldi	r22, 0x01	; 1
+ 2d8:	47 e0       	ldi	r20, 0x07	; 7
+ 2da:	20 e2       	ldi	r18, 0x20	; 32
+ 2dc:	0e 94 58 00 	call	0xb0	; 0xb0 <Send428>
+
+
+  	//Set the coil current parameters (which is application specific)
+  	Send428(IDX_AGTAT_ALEAT|MOTOR0, 0x00, 0x10, 0x40); //i_s_agtat/i_s_aleat/i_s_v0/a_threshold
+ 2e0:	80 e1       	ldi	r24, 0x10	; 16
+ 2e2:	60 e0       	ldi	r22, 0x00	; 0
+ 2e4:	40 e1       	ldi	r20, 0x10	; 16
+ 2e6:	20 e4       	ldi	r18, 0x40	; 64
+ 2e8:	0e 94 58 00 	call	0xb0	; 0xb0 <Send428>
+
+  	//Set the pre-dividers and the microstep resolution (which is also application and motor specific)
+	//pulsdiv/rampdiv/µStep
+	Write428Bytes(IDX_PULSEDIV_RAMPDIV|MOTOR0, 0x00, (MotorConfig[0].PulseDiv<<4)|(MotorConfig[0].RampDiv & 0x0f), 0x06);
+ 2ec:	40 91 87 01 	lds	r20, 0x0187
+ 2f0:	42 95       	swap	r20
+ 2f2:	40 7f       	andi	r20, 0xF0	; 240
+ 2f4:	80 91 88 01 	lds	r24, 0x0188
+ 2f8:	8f 70       	andi	r24, 0x0F	; 15
+ 2fa:	48 2b       	or	r20, r24
+ 2fc:	88 e1       	ldi	r24, 0x18	; 24
+ 2fe:	60 e0       	ldi	r22, 0x00	; 0
+ 300:	26 e0       	ldi	r18, 0x06	; 6
+ 302:	0e 94 c0 00 	call	0x180	; 0x180 <Write428Bytes>
+
+	//Now some examples of the driving parameters. This is highly application specific!
+
+  	//Example for motor #0: RAMP mode
+  	Send428(IDX_VMIN|MOTOR0, 0, 0, 1);  //Vmin = 1
+ 306:	84 e0       	ldi	r24, 0x04	; 4
+ 308:	60 e0       	ldi	r22, 0x00	; 0
+ 30a:	40 e0       	ldi	r20, 0x00	; 0
+ 30c:	21 e0       	ldi	r18, 0x01	; 1
+ 30e:	0e 94 58 00 	call	0xb0	; 0xb0 <Send428>
+  	Send428(IDX_VMAX|MOTOR0, 0, MotorConfig[0].VMax >> 8, MotorConfig[0].VMax & 0xff);  //VMax = MotorConfig[0].VMax
+ 312:	20 91 83 01 	lds	r18, 0x0183
+ 316:	40 91 84 01 	lds	r20, 0x0184
+ 31a:	86 e0       	ldi	r24, 0x06	; 6
+ 31c:	60 e0       	ldi	r22, 0x00	; 0
+ 31e:	0e 94 58 00 	call	0xb0	; 0xb0 <Send428>
+  	Send428(IDX_AMAX|MOTOR0, 0, MotorConfig[0].AMax >> 8, MotorConfig[0].AMax & 0xff);  //AMax = MotorConfig[0].AMax
+ 322:	20 91 85 01 	lds	r18, 0x0185
+ 326:	40 91 86 01 	lds	r20, 0x0186
+ 32a:	8c e0       	ldi	r24, 0x0C	; 12
+ 32c:	60 e0       	ldi	r22, 0x00	; 0
+ 32e:	0e 94 58 00 	call	0xb0	; 0xb0 <Send428>
+
+	SetAMax(0, MotorConfig[0].AMax);
+ 332:	60 91 85 01 	lds	r22, 0x0185
+ 336:	70 91 86 01 	lds	r23, 0x0186
+ 33a:	80 e0       	ldi	r24, 0x00	; 0
+ 33c:	0e 94 d1 00 	call	0x1a2	; 0x1a2 <SetAMax>
+  	Send428(IDX_REFCONF_RM|MOTOR0, 0, NO_REF, RM_RAMP);  //RAMP mode, stop switches not active
+ 340:	84 e1       	ldi	r24, 0x14	; 20
+ 342:	60 e0       	ldi	r22, 0x00	; 0
+ 344:	4f e0       	ldi	r20, 0x0F	; 15
+ 346:	20 e0       	ldi	r18, 0x00	; 0
+ 348:	0e 94 58 00 	call	0xb0	; 0xb0 <Send428>
+  	//Motor #0 can now be driven by setting the XTarget register (IDX_XTARGET) to the desired end position.
+	//ATTENTION: The values in IDX_PMUL_PDIV depend on the AMax and Pulsediv/Rampdiv values and have to be
+	//calculated using the algorithm given in the data sheet.
+	//The values given here have been calculated using the Calc428.exe program on the TechLibCD.
+
+	Write428Long(IDX_XTARGET|MOTOR0,(1000000));
+ 34c:	80 e0       	ldi	r24, 0x00	; 0
+ 34e:	40 e4       	ldi	r20, 0x40	; 64
+ 350:	52 e4       	ldi	r21, 0x42	; 66
+ 352:	6f e0       	ldi	r22, 0x0F	; 15
+ 354:	70 e0       	ldi	r23, 0x00	; 0
+ 356:	0e 94 89 00 	call	0x112	; 0x112 <Write428Long>
+
+	//Motor #2 can now be driven by setting the VActual register (IDX_VACTUAL) to the desired value.
+	//The motor will then uses that velocity immediately, there is no accelerating or decelerating.
+*/
+
+}
+ 35a:	df 91       	pop	r29
+ 35c:	cf 91       	pop	r28
+ 35e:	1f 91       	pop	r17
+ 360:	0f 91       	pop	r16
+ 362:	08 95       	ret
+
+00000364 <main>:
+};
+
+void Init_SPI(void)
+{
+	/* Set MISO, SCK, SS as output, all others input */
+	DDR_SPI   = (1<<MOSI) | (1<<SCK) | (1<<SS);
+ 364:	87 e0       	ldi	r24, 0x07	; 7
+ 366:	84 b9       	out	0x04, r24	; 4
+
+	/* Enable SPI, Master, CPOL=1, CPHA=1 Setup (Falling) Sample (Rising), set clock rate fck/16 */
+	SPCR      = (1<<SPE) | (1<<MSTR) | (1<<CPOL) | (1<<CPHA)  | (1<<SPR0);
+ 368:	8d e5       	ldi	r24, 0x5D	; 93
+ 36a:	8c bd       	out	0x2c, r24	; 44
+{
+	uint16_t __ticks;
+	double __tmp = ((F_CPU) / 4e3) * __ms;
+#if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__)
+	extern void __builtin_avr_delay_cycles(unsigned long);
+	__builtin_avr_delay_cycles(__tmp);
+ 36c:	83 ef       	ldi	r24, 0xF3	; 243
+ 36e:	91 e0       	ldi	r25, 0x01	; 1
+ 370:	01 97       	sbiw	r24, 0x01	; 1
+ 372:	f1 f7       	brne	.-4      	; 0x370 <main+0xc>
+ 374:	00 c0       	rjmp	.+0      	; 0x376 <main+0x12>
+ 376:	00 00       	nop
+int main (void) {
+
+	Init_SPI();
+	_delay_ms(1);
+
+	Init428();
+ 378:	0e 94 54 01 	call	0x2a8	; 0x2a8 <Init428>
+ 37c:	83 ef       	ldi	r24, 0xF3	; 243
+ 37e:	91 e0       	ldi	r25, 0x01	; 1
+ 380:	01 97       	sbiw	r24, 0x01	; 1
+ 382:	f1 f7       	brne	.-4      	; 0x380 <main+0x1c>
+ 384:	00 c0       	rjmp	.+0      	; 0x386 <main+0x22>
+ 386:	00 00       	nop
+ 388:	f9 cf       	rjmp	.-14     	; 0x37c <main+0x18>
+
+0000038a <_exit>:
+ 38a:	f8 94       	cli
+
+0000038c <__stop_program>:
+ 38c:	ff cf       	rjmp	.-2      	; 0x38c <__stop_program>
