@@ -1,0 +1,441 @@
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccRTr3ax.s 			page 1
+
+
+   1              	# 1 "CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s"
+   1              	/*****************************************************************************/
+   0              	
+   0              	
+   0              	
+   2              	/* startup_LPC17xx.s: Startup file for LPC17xx device series                 */
+   3              	/*****************************************************************************/
+   4              	/* Version: CodeSourcery Sourcery G++ Lite (with CS3)                        */
+   5              	/*****************************************************************************/
+   6              	
+   7              	
+   8              	/*
+   9              	//*** <<< Use Configuration Wizard in Context Menu >>> ***
+  10              	*/
+  11              	
+  12              	#define RAM_MODE 0
+  13              	
+  14              	/*
+  15              	// <h> Stack Configuration
+  16              	//   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
+  17              	// </h>
+  18              	*/
+  19              	
+  20              	    .equ    Stack_Size, 0x00000100
+  21              	    .section ".stack", "w"
+  22              	    .align  3
+  23              	    .globl  __cs3_stack_mem
+  24              	    .globl  __cs3_stack_size
+  25              	__cs3_stack_mem:
+  26              	    .if     Stack_Size
+  27 0000 00000000 	    .space  Stack_Size
+  27      00000000 
+  27      00000000 
+  27      00000000 
+  27      00000000 
+  28              	    .endif
+  29              	    .size   __cs3_stack_mem,  . - __cs3_stack_mem
+  30              	    .set    __cs3_stack_size, . - __cs3_stack_mem
+  31              	
+  32              	
+  33              	/*
+  34              	// <h> Heap Configuration
+  35              	//   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
+  36              	// </h>
+  37              	*/
+  38              	
+  39              	    .equ    Heap_Size,  0x00001000
+  40              	
+  41              	    .section ".heap", "w"
+  42              	    .align  3
+  43              	    .globl  __cs3_heap_start
+  44              	    .globl  __cs3_heap_end
+  45              	__cs3_heap_start:
+  46              	    .if     Heap_Size
+  47 0000 00000000 	    .space  Heap_Size
+  47      00000000 
+  47      00000000 
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccRTr3ax.s 			page 2
+
+
+  47      00000000 
+  47      00000000 
+  48              	    .endif
+  49              	__cs3_heap_end:
+  50              	
+  51              	
+  52              	/* Vector Table */
+  53              	
+  54              	    .section ".cs3.interrupt_vector"
+  55              	    .globl  __cs3_interrupt_vector_cortex_m
+  56              	    .type   __cs3_interrupt_vector_cortex_m, %object
+  57              	
+  58              	__cs3_interrupt_vector_cortex_m:
+  59 0000 00000000 	    .long   __cs3_stack                 /* Top of Stack                 */
+  60 0004 00000000 	    .long   __cs3_reset                 /* Reset Handler                */
+  61 0008 00000000 	    .long   NMI_Handler                 /* NMI Handler                  */
+  62 000c 00000000 	    .long   HardFault_Handler           /* Hard Fault Handler           */
+  63 0010 00000000 	    .long   MemManage_Handler           /* MPU Fault Handler            */
+  64 0014 00000000 	    .long   BusFault_Handler            /* Bus Fault Handler            */
+  65 0018 00000000 	    .long   UsageFault_Handler          /* Usage Fault Handler          */
+  66 001c 00000000 	    .long   0                           /* Reserved                     */
+  67 0020 00000000 	    .long   0                           /* Reserved                     */
+  68 0024 00000000 	    .long   0                           /* Reserved                     */
+  69 0028 00000000 	    .long   0                           /* Reserved                     */
+  70 002c 00000000 	    .long   SVC_Handler                 /* SVCall Handler               */
+  71 0030 00000000 	    .long   DebugMon_Handler            /* Debug Monitor Handler        */
+  72 0034 00000000 	    .long   0                           /* Reserved                     */
+  73 0038 00000000 	    .long   PendSV_Handler              /* PendSV Handler               */
+  74 003c 00000000 	    .long   SysTick_Handler             /* SysTick Handler              */
+  75              	
+  76              	    /* External Interrupts */
+  77 0040 00000000 	    .long   WDT_IRQHandler              /* 16: Watchdog Timer               */
+  78 0044 00000000 	    .long   TIMER0_IRQHandler           /* 17: Timer0                       */
+  79 0048 00000000 	    .long   TIMER1_IRQHandler           /* 18: Timer1                       */
+  80 004c 00000000 	    .long   TIMER2_IRQHandler           /* 19: Timer2                       */
+  81 0050 00000000 	    .long   TIMER3_IRQHandler           /* 20: Timer3                       */
+  82 0054 00000000 	    .long   UART0_IRQHandler            /* 21: UART0                        */
+  83 0058 00000000 	    .long   UART1_IRQHandler            /* 22: UART1                        */
+  84 005c 00000000 	    .long   UART2_IRQHandler            /* 23: UART2                        */
+  85 0060 00000000 	    .long   UART3_IRQHandler            /* 24: UART3                        */
+  86 0064 00000000 	    .long   PWM1_IRQHandler             /* 25: PWM1                         */
+  87 0068 00000000 	    .long   I2C0_IRQHandler             /* 26: I2C0                         */
+  88 006c 00000000 	    .long   I2C1_IRQHandler             /* 27: I2C1                         */
+  89 0070 00000000 	    .long   I2C2_IRQHandler             /* 28: I2C2                         */
+  90 0074 00000000 	    .long   SPI_IRQHandler              /* 29: SPI                          */
+  91 0078 00000000 	    .long   SSP0_IRQHandler             /* 30: SSP0                         */
+  92 007c 00000000 	    .long   SSP1_IRQHandler             /* 31: SSP1                         */
+  93 0080 00000000 	    .long   PLL0_IRQHandler             /* 32: PLL0 Lock (Main PLL)         */
+  94 0084 00000000 	    .long   RTC_IRQHandler              /* 33: Real Time Clock              */
+  95 0088 00000000 	    .long   EINT0_IRQHandler            /* 34: External Interrupt 0         */
+  96 008c 00000000 	    .long   EINT1_IRQHandler            /* 35: External Interrupt 1         */
+  97 0090 00000000 	    .long   EINT2_IRQHandler            /* 36: External Interrupt 2         */
+  98 0094 00000000 	    .long   EINT3_IRQHandler            /* 37: External Interrupt 3         */
+  99 0098 00000000 	    .long   ADC_IRQHandler              /* 38: A/D Converter                */
+ 100 009c 00000000 	    .long   BOD_IRQHandler              /* 39: Brown-Out Detect             */
+ 101 00a0 00000000 	    .long   USB_IRQHandler              /* 40: USB                          */
+ 102 00a4 00000000 	    .long   CAN_IRQHandler              /* 41: CAN                          */
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccRTr3ax.s 			page 3
+
+
+ 103 00a8 00000000 	    .long   DMA_IRQHandler              /* 42: General Purpose DMA          */
+ 104 00ac 00000000 	    .long   I2S_IRQHandler              /* 43: I2S                          */
+ 105 00b0 00000000 	    .long   ENET_IRQHandler             /* 44: Ethernet                     */
+ 106 00b4 00000000 	    .long   RIT_IRQHandler              /* 45: Repetitive Interrupt Timer   */
+ 107 00b8 00000000 	    .long   MCPWM_IRQHandler            /* 46: Motor Control PWM            */
+ 108 00bc 00000000 	    .long   QEI_IRQHandler              /* 47: Quadrature Encoder Interface */
+ 109 00c0 00000000 	    .long   PLL1_IRQHandler             /* 48: PLL1 Lock (USB PLL)          */
+ 110 00c4 00000000 	    .long	USBActivity_IRQHandler		/* 49: USB Activity 				*/
+ 111 00c8 00000000 	    .long 	CANActivity_IRQHandler		/* 50: CAN Activity					*/
+ 112              	
+ 113              	    .size   __cs3_interrupt_vector_cortex_m, . - __cs3_interrupt_vector_cortex_m
+ 114              	
+ 115              	
+ 116              	    .thumb
+ 117              	
+ 118              	
+ 119              	/* Reset Handler */
+ 120              	
+ 121              	    .section .cs3.reset,"x",%progbits
+ 122              	    .thumb_func
+ 123              	    .globl  __cs3_reset_cortex_m
+ 124              	    .type   __cs3_reset_cortex_m, %function
+ 125              	__cs3_reset_cortex_m:
+ 126              	    .fnstart
+ 127              	.if RAM_MODE
+ 128              	/* Clear .bss section (Zero init) */
+ 129              		MOV     R0, #0
+ 130              		LDR     R1, =__bss_start__
+ 131              		LDR     R2, =__bss_end__
+ 132              		CMP     R1,R2
+ 133              		BEQ     BSSIsEmpty
+ 134              	LoopZI:
+ 135              		CMP     R1, R2
+ 136              		BHS		BSSIsEmpty
+ 137              		STR   	R0, [R1]
+ 138              		ADD		R1, #4
+ 139              		BLO     LoopZI
+ 140              	BSSIsEmpty:
+ 141              	    LDR     R0, =SystemInit
+ 142              	    BLX     R0
+ 143              	    LDR     R0,=main
+ 144              	    BX      R0
+ 145              	.else
+ 146 0000 0148     	    LDR     R0, =SystemInit
+ 147 0002 8047     	    BLX     R0
+ 148 0004 0148     		LDR     R0,=_start
+ 149 0006 0047     	    BX      R0
+ 150              	.endif
+ 151 0008 00000000 	    .pool
+ 151      00000000 
+ 152              	    .cantunwind
+ 153              	    .fnend
+ 154              	    .size   __cs3_reset_cortex_m,.-__cs3_reset_cortex_m
+ 155              	
+ 156              	    .section ".text"
+ 157              	
+ 158              	/* Exception Handlers */
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccRTr3ax.s 			page 4
+
+
+ 159              	
+ 160              	    .weak   NMI_Handler
+ 161              	    .type   NMI_Handler, %function
+ 162              	NMI_Handler:
+ 163 0000 FEE7     	    B       .
+ 164              	    .size   NMI_Handler, . - NMI_Handler
+ 165              	
+ 166              	    .weak   HardFault_Handler
+ 167              	    .type   HardFault_Handler, %function
+ 168              	HardFault_Handler:
+ 169 0002 FEE7     	    B       .
+ 170              	    .size   HardFault_Handler, . - HardFault_Handler
+ 171              	
+ 172              	    .weak   MemManage_Handler
+ 173              	    .type   MemManage_Handler, %function
+ 174              	MemManage_Handler:
+ 175 0004 FEE7     	    B       .
+ 176              	    .size   MemManage_Handler, . - MemManage_Handler
+ 177              	
+ 178              	    .weak   BusFault_Handler
+ 179              	    .type   BusFault_Handler, %function
+ 180              	BusFault_Handler:
+ 181 0006 FEE7     	    B       .
+ 182              	    .size   BusFault_Handler, . - BusFault_Handler
+ 183              	
+ 184              	    .weak   UsageFault_Handler
+ 185              	    .type   UsageFault_Handler, %function
+ 186              	UsageFault_Handler:
+ 187 0008 FEE7     	    B       .
+ 188              	    .size   UsageFault_Handler, . - UsageFault_Handler
+ 189              	
+ 190              	    .weak   SVC_Handler
+ 191              	    .type   SVC_Handler, %function
+ 192              	SVC_Handler:
+ 193 000a FEE7     	    B       .
+ 194              	    .size   SVC_Handler, . - SVC_Handler
+ 195              	
+ 196              	    .weak   DebugMon_Handler
+ 197              	    .type   DebugMon_Handler, %function
+ 198              	DebugMon_Handler:
+ 199 000c FEE7     	    B       .
+ 200              	    .size   DebugMon_Handler, . - DebugMon_Handler
+ 201              	
+ 202              	    .weak   PendSV_Handler
+ 203              	    .type   PendSV_Handler, %function
+ 204              	PendSV_Handler:
+ 205 000e FEE7     	    B       .
+ 206              	    .size   PendSV_Handler, . - PendSV_Handler
+ 207              	
+ 208              	    .weak   SysTick_Handler
+ 209              	    .type   SysTick_Handler, %function
+ 210              	SysTick_Handler:
+ 211 0010 FEE7     	    B       .
+ 212              	    .size   SysTick_Handler, . - SysTick_Handler
+ 213              	
+ 214              	
+ 215              	/* IRQ Handlers */
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccRTr3ax.s 			page 5
+
+
+ 216              	
+ 217              	    .globl  Default_Handler
+ 218              	    .type   Default_Handler, %function
+ 219              	Default_Handler:
+ 220 0012 FEE7     	    B       .
+ 221              	    .size   Default_Handler, . - Default_Handler
+ 222              	
+ 223              	    .macro  IRQ handler
+ 224              	    .weak   \handler
+ 225              	    .set    \handler, Default_Handler
+ 226              	    .endm
+ 227              	
+ 228              	    IRQ     WDT_IRQHandler
+ 228              	> .weak WDT_IRQHandler
+ 228              	> .set WDT_IRQHandler,Default_Handler
+ 229              	    IRQ     TIMER0_IRQHandler
+ 229              	> .weak TIMER0_IRQHandler
+ 229              	> .set TIMER0_IRQHandler,Default_Handler
+ 230              	    IRQ     TIMER1_IRQHandler
+ 230              	> .weak TIMER1_IRQHandler
+ 230              	> .set TIMER1_IRQHandler,Default_Handler
+ 231              	    IRQ     TIMER2_IRQHandler
+ 231              	> .weak TIMER2_IRQHandler
+ 231              	> .set TIMER2_IRQHandler,Default_Handler
+ 232              	    IRQ     TIMER3_IRQHandler
+ 232              	> .weak TIMER3_IRQHandler
+ 232              	> .set TIMER3_IRQHandler,Default_Handler
+ 233              	    IRQ     UART0_IRQHandler
+ 233              	> .weak UART0_IRQHandler
+ 233              	> .set UART0_IRQHandler,Default_Handler
+ 234              	    IRQ     UART1_IRQHandler
+ 234              	> .weak UART1_IRQHandler
+ 234              	> .set UART1_IRQHandler,Default_Handler
+ 235              	    IRQ     UART2_IRQHandler
+ 235              	> .weak UART2_IRQHandler
+ 235              	> .set UART2_IRQHandler,Default_Handler
+ 236              	    IRQ     UART3_IRQHandler
+ 236              	> .weak UART3_IRQHandler
+ 236              	> .set UART3_IRQHandler,Default_Handler
+ 237              	    IRQ     PWM1_IRQHandler
+ 237              	> .weak PWM1_IRQHandler
+ 237              	> .set PWM1_IRQHandler,Default_Handler
+ 238              	    IRQ     I2C0_IRQHandler
+ 238              	> .weak I2C0_IRQHandler
+ 238              	> .set I2C0_IRQHandler,Default_Handler
+ 239              	    IRQ     I2C1_IRQHandler
+ 239              	> .weak I2C1_IRQHandler
+ 239              	> .set I2C1_IRQHandler,Default_Handler
+ 240              	    IRQ     I2C2_IRQHandler
+ 240              	> .weak I2C2_IRQHandler
+ 240              	> .set I2C2_IRQHandler,Default_Handler
+ 241              	    IRQ     SPI_IRQHandler
+ 241              	> .weak SPI_IRQHandler
+ 241              	> .set SPI_IRQHandler,Default_Handler
+ 242              	    IRQ     SSP0_IRQHandler
+ 242              	> .weak SSP0_IRQHandler
+ 242              	> .set SSP0_IRQHandler,Default_Handler
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccRTr3ax.s 			page 6
+
+
+ 243              	    IRQ     SSP1_IRQHandler
+ 243              	> .weak SSP1_IRQHandler
+ 243              	> .set SSP1_IRQHandler,Default_Handler
+ 244              	    IRQ     PLL0_IRQHandler
+ 244              	> .weak PLL0_IRQHandler
+ 244              	> .set PLL0_IRQHandler,Default_Handler
+ 245              	    IRQ     RTC_IRQHandler
+ 245              	> .weak RTC_IRQHandler
+ 245              	> .set RTC_IRQHandler,Default_Handler
+ 246              	    IRQ     EINT0_IRQHandler
+ 246              	> .weak EINT0_IRQHandler
+ 246              	> .set EINT0_IRQHandler,Default_Handler
+ 247              	    IRQ     EINT1_IRQHandler
+ 247              	> .weak EINT1_IRQHandler
+ 247              	> .set EINT1_IRQHandler,Default_Handler
+ 248              	    IRQ     EINT2_IRQHandler
+ 248              	> .weak EINT2_IRQHandler
+ 248              	> .set EINT2_IRQHandler,Default_Handler
+ 249              	    IRQ     EINT3_IRQHandler
+ 249              	> .weak EINT3_IRQHandler
+ 249              	> .set EINT3_IRQHandler,Default_Handler
+ 250              	    IRQ     ADC_IRQHandler
+ 250              	> .weak ADC_IRQHandler
+ 250              	> .set ADC_IRQHandler,Default_Handler
+ 251              	    IRQ     BOD_IRQHandler
+ 251              	> .weak BOD_IRQHandler
+ 251              	> .set BOD_IRQHandler,Default_Handler
+ 252              	    IRQ     USB_IRQHandler
+ 252              	> .weak USB_IRQHandler
+ 252              	> .set USB_IRQHandler,Default_Handler
+ 253              	    IRQ     CAN_IRQHandler
+ 253              	> .weak CAN_IRQHandler
+ 253              	> .set CAN_IRQHandler,Default_Handler
+ 254              	    IRQ     DMA_IRQHandler
+ 254              	> .weak DMA_IRQHandler
+ 254              	> .set DMA_IRQHandler,Default_Handler
+ 255              	    IRQ     I2S_IRQHandler
+ 255              	> .weak I2S_IRQHandler
+ 255              	> .set I2S_IRQHandler,Default_Handler
+ 256              	    IRQ     ENET_IRQHandler
+ 256              	> .weak ENET_IRQHandler
+ 256              	> .set ENET_IRQHandler,Default_Handler
+ 257              	    IRQ     RIT_IRQHandler
+ 257              	> .weak RIT_IRQHandler
+ 257              	> .set RIT_IRQHandler,Default_Handler
+ 258              	    IRQ     MCPWM_IRQHandler
+ 258              	> .weak MCPWM_IRQHandler
+ 258              	> .set MCPWM_IRQHandler,Default_Handler
+ 259              	    IRQ     QEI_IRQHandler
+ 259              	> .weak QEI_IRQHandler
+ 259              	> .set QEI_IRQHandler,Default_Handler
+ 260              	    IRQ     PLL1_IRQHandler
+ 260              	> .weak PLL1_IRQHandler
+ 260              	> .set PLL1_IRQHandler,Default_Handler
+ 261              	    IRQ		USBActivity_IRQHandler
+ 261              	> .weak USBActivity_IRQHandler
+ 261              	> .set USBActivity_IRQHandler,Default_Handler
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccRTr3ax.s 			page 7
+
+
+ 262              	    IRQ		CANActivity_IRQHandler
+ 262              	> .weak CANActivity_IRQHandler
+ 262              	> .set CANActivity_IRQHandler,Default_Handler
+ 263              	
+ 264              	    .end
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccRTr3ax.s 			page 8
+
+
+DEFINED SYMBOLS
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:20     *ABS*:00000100 Stack_Size
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:22     .stack:00000000 $d
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:25     .stack:00000000 __cs3_stack_mem
+                            *ABS*:00000100 __cs3_stack_size
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:39     *ABS*:00001000 Heap_Size
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:42     .heap:00000000 $d
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:45     .heap:00000000 __cs3_heap_start
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:49     .heap:00001000 __cs3_heap_end
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:58     .cs3.interrupt_vector:00000000 __cs3_interrupt_vector_cortex_m
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:162    .text:00000000 NMI_Handler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:168    .text:00000002 HardFault_Handler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:174    .text:00000004 MemManage_Handler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:180    .text:00000006 BusFault_Handler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:186    .text:00000008 UsageFault_Handler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:192    .text:0000000a SVC_Handler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:198    .text:0000000c DebugMon_Handler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:204    .text:0000000e PendSV_Handler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:210    .text:00000010 SysTick_Handler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 WDT_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 TIMER0_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 TIMER1_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 TIMER2_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 TIMER3_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 UART0_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 UART1_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 UART2_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 UART3_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 PWM1_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 I2C0_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 I2C1_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 I2C2_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 SPI_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 SSP0_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 SSP1_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 PLL0_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 RTC_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 EINT0_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 EINT1_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 EINT2_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 EINT3_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 ADC_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 BOD_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 USB_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 CAN_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 DMA_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 I2S_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 ENET_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 RIT_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 MCPWM_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 QEI_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 PLL1_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 USBActivity_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 CANActivity_IRQHandler
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:125    .cs3.reset:00000000 __cs3_reset_cortex_m
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:146    .cs3.reset:00000000 $t
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:151    .cs3.reset:00000008 $d
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccRTr3ax.s 			page 9
+
+
+             .ARM.exidx.cs3.reset:00000000 $d
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:163    .text:00000000 $t
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/gcc/startup_LPC17xx.s:219    .text:00000012 Default_Handler
+                   .debug_aranges:0000000c $d
+
+UNDEFINED SYMBOLS
+__cs3_stack
+__cs3_reset
+SystemInit
+_start

@@ -1,0 +1,411 @@
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccsgJ4Am.s 			page 1
+
+
+   1              	# 1 "CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s"
+   1              	;/*****************************************************************************
+   0              	
+   0              	
+   0              	
+   2              	; * @file:    startup_LPC17xx.s
+   3              	; * @purpose: CMSIS Cortex-M3 Core Device Startup File
+   4              	; *           for the NXP LPC17xx Device Series
+   5              	; * @version: V1.03
+   6              	; * @date:    09. February 2010
+   7              	; *------- <<< Use Configuration Wizard in Context Menu >>> ------------------
+   8              	; *
+   9              	; * Copyright (C) 2010 ARM Limited. All rights reserved.
+  10              	; * ARM Limited (ARM) is supplying this software for use with Cortex-M3
+  11              	; * processor based microcontrollers.  This file can be freely distributed
+  12              	; * within development tools that are supporting such ARM based processors.
+  13              	; *
+  14              	; * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+  15              	; * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+  16              	; * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+  17              	; * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+  18              	; * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+  19              	; *
+  20              	; *****************************************************************************/
+  21              	
+  22              	
+  23              	; <h> Stack Configuration
+  24              	;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
+  25              	; </h>
+  26              	
+  27              	Stack_Size      EQU     0x00000200
+  28              	
+  29              	                AREA    STACK, NOINIT, READWRITE, ALIGN=3
+  30              	Stack_Mem       SPACE   Stack_Size
+  31              	__initial_sp
+  32              	
+  33              	
+  34              	; <h> Heap Configuration
+  35              	;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
+  36              	; </h>
+  37              	
+  38              	Heap_Size       EQU     0x00000000
+  39              	
+  40              	                AREA    HEAP, NOINIT, READWRITE, ALIGN=3
+  41              	__heap_base
+  42              	Heap_Mem        SPACE   Heap_Size
+  43              	__heap_limit
+  44              	
+  45              	
+  46              	                PRESERVE8
+  47              	                THUMB
+  48              	
+  49              	
+  50              	; Vector Table Mapped to Address 0 at Reset
+  51              	
+  52              	                AREA    RESET, DATA, READONLY
+  53              	                EXPORT  __Vectors
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccsgJ4Am.s 			page 2
+
+
+  54              	
+  55              	__Vectors       DCD     __initial_sp              ; Top of Stack
+  56              	                DCD     Reset_Handler             ; Reset Handler
+  57              	                DCD     NMI_Handler               ; NMI Handler
+  58              	                DCD     HardFault_Handler         ; Hard Fault Handler
+  59              	                DCD     MemManage_Handler         ; MPU Fault Handler
+  60              	                DCD     BusFault_Handler          ; Bus Fault Handler
+  61              	                DCD     UsageFault_Handler        ; Usage Fault Handler
+  62              	                DCD     0                         ; Reserved
+  63              	                DCD     0                         ; Reserved
+  64              	                DCD     0                         ; Reserved
+  65              	                DCD     0                         ; Reserved
+  66              	                DCD     SVC_Handler               ; SVCall Handler
+  67              	                DCD     DebugMon_Handler          ; Debug Monitor Handler
+  68              	                DCD     0                         ; Reserved
+  69              	                DCD     PendSV_Handler            ; PendSV Handler
+  70              	                DCD     SysTick_Handler           ; SysTick Handler
+  71              	
+  72              	                ; External Interrupts
+  73              	                DCD     WDT_IRQHandler            ; 16: Watchdog Timer
+  74              	                DCD     TIMER0_IRQHandler         ; 17: Timer0
+  75              	                DCD     TIMER1_IRQHandler         ; 18: Timer1
+  76              	                DCD     TIMER2_IRQHandler         ; 19: Timer2
+  77              	                DCD     TIMER3_IRQHandler         ; 20: Timer3
+  78              	                DCD     UART0_IRQHandler          ; 21: UART0
+  79              	                DCD     UART1_IRQHandler          ; 22: UART1
+  80              	                DCD     UART2_IRQHandler          ; 23: UART2
+  81              	                DCD     UART3_IRQHandler          ; 24: UART3
+  82              	                DCD     PWM1_IRQHandler           ; 25: PWM1
+  83              	                DCD     I2C0_IRQHandler           ; 26: I2C0
+  84              	                DCD     I2C1_IRQHandler           ; 27: I2C1
+  85              	                DCD     I2C2_IRQHandler           ; 28: I2C2
+  86              	                DCD     SPI_IRQHandler            ; 29: SPI
+  87              	                DCD     SSP0_IRQHandler           ; 30: SSP0
+  88              	                DCD     SSP1_IRQHandler           ; 31: SSP1
+  89              	                DCD     PLL0_IRQHandler           ; 32: PLL0 Lock (Main PLL)
+  90              	                DCD     RTC_IRQHandler            ; 33: Real Time Clock
+  91              	                DCD     EINT0_IRQHandler          ; 34: External Interrupt 0
+  92              	                DCD     EINT1_IRQHandler          ; 35: External Interrupt 1
+  93              	                DCD     EINT2_IRQHandler          ; 36: External Interrupt 2
+  94              	                DCD     EINT3_IRQHandler          ; 37: External Interrupt 3
+  95              	                DCD     ADC_IRQHandler            ; 38: A/D Converter
+  96              	                DCD     BOD_IRQHandler            ; 39: Brown-Out Detect
+  97              	                DCD     USB_IRQHandler            ; 40: USB
+  98              	                DCD     CAN_IRQHandler            ; 41: CAN
+  99              	                DCD     DMA_IRQHandler            ; 42: General Purpose DMA
+ 100              	                DCD     I2S_IRQHandler            ; 43: I2S
+ 101              	                DCD     ENET_IRQHandler           ; 44: Ethernet
+ 102              	                DCD     RIT_IRQHandler            ; 45: Repetitive Interrupt Timer
+ 103              	                DCD     MCPWM_IRQHandler          ; 46: Motor Control PWM
+ 104              	                DCD     QEI_IRQHandler            ; 47: Quadrature Encoder Interface
+ 105              	                DCD     PLL1_IRQHandler           ; 48: PLL1 Lock (USB PLL)
+ 106              	                DCD		USBActivity_IRQHandler	  ; 49: USB Activity interrupt to wakeup
+ 107              	                DCD		CANActivity_IRQHandler	  ; 50: CAN Activity interrupt to wakeup
+ 108              	
+ 109              	
+ 110              	                IF      :LNOT::DEF:NO_CRP
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccsgJ4Am.s 			page 3
+
+
+ 111              	                AREA    |.ARM.__at_0x02FC|, CODE, READONLY
+ 112              	CRP_Key         DCD     0xFFFFFFFF
+ 113              	                ENDIF
+ 114              	
+ 115              	
+ 116              	                AREA    |.text|, CODE, READONLY
+ 117              	
+ 118              	
+ 119              	; Reset Handler
+ 120              	
+ 121              	Reset_Handler   PROC
+ 122              	                EXPORT  Reset_Handler             [WEAK]
+ 123              	                IMPORT  SystemInit
+ 124              	                IMPORT  __main
+ 125 ???? 0048     	                LDR     R0, =SystemInit
+ 126 ???? 8047     	                BLX     R0
+ 127 ???? 0048     	                LDR     R0, =__main
+ 128 ???? 0047     	                BX      R0
+ 129              	                ENDP
+ 130              	
+ 131              	
+ 132              	; Dummy Exception Handlers (infinite loops which can be modified)
+ 133              	
+ 134              	NMI_Handler     PROC
+ 135              	                EXPORT  NMI_Handler               [WEAK]
+ 136 ???? 00E0     	                B       .
+ 137              	                ENDP
+ 138              	HardFault_Handler\
+ 139              	                PROC
+ 140              	                EXPORT  HardFault_Handler         [WEAK]
+ 141 ???? 00E0     	                B       .
+ 142              	                ENDP
+ 143              	MemManage_Handler\
+ 144              	                PROC
+ 145              	                EXPORT  MemManage_Handler         [WEAK]
+ 146 ???? 00E0     	                B       .
+ 147              	                ENDP
+ 148              	BusFault_Handler\
+ 149              	                PROC
+ 150              	                EXPORT  BusFault_Handler          [WEAK]
+ 151 ???? 00E0     	                B       .
+ 152              	                ENDP
+ 153              	UsageFault_Handler\
+ 154              	                PROC
+ 155              	                EXPORT  UsageFault_Handler        [WEAK]
+ 156 ???? 00E0     	                B       .
+ 157              	                ENDP
+ 158              	SVC_Handler     PROC
+ 159              	                EXPORT  SVC_Handler               [WEAK]
+ 160 ???? 00E0     	                B       .
+ 161              	                ENDP
+ 162              	DebugMon_Handler\
+ 163              	                PROC
+ 164              	                EXPORT  DebugMon_Handler          [WEAK]
+ 165 ???? 00E0     	                B       .
+ 166              	                ENDP
+ 167              	PendSV_Handler  PROC
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccsgJ4Am.s 			page 4
+
+
+ 168              	                EXPORT  PendSV_Handler            [WEAK]
+ 169 ???? 00E0     	                B       .
+ 170              	                ENDP
+ 171              	SysTick_Handler PROC
+ 172              	                EXPORT  SysTick_Handler           [WEAK]
+ 173 ???? 00E0     	                B       .
+ 174              	                ENDP
+ 175              	
+ 176              	Default_Handler PROC
+ 177              	
+ 178              	                EXPORT  WDT_IRQHandler            [WEAK]
+ 179              	                EXPORT  TIMER0_IRQHandler         [WEAK]
+ 180              	                EXPORT  TIMER1_IRQHandler         [WEAK]
+ 181              	                EXPORT  TIMER2_IRQHandler         [WEAK]
+ 182              	                EXPORT  TIMER3_IRQHandler         [WEAK]
+ 183              	                EXPORT  UART0_IRQHandler          [WEAK]
+ 184              	                EXPORT  UART1_IRQHandler          [WEAK]
+ 185              	                EXPORT  UART2_IRQHandler          [WEAK]
+ 186              	                EXPORT  UART3_IRQHandler          [WEAK]
+ 187              	                EXPORT  PWM1_IRQHandler           [WEAK]
+ 188              	                EXPORT  I2C0_IRQHandler           [WEAK]
+ 189              	                EXPORT  I2C1_IRQHandler           [WEAK]
+ 190              	                EXPORT  I2C2_IRQHandler           [WEAK]
+ 191              	                EXPORT  SPI_IRQHandler            [WEAK]
+ 192              	                EXPORT  SSP0_IRQHandler           [WEAK]
+ 193              	                EXPORT  SSP1_IRQHandler           [WEAK]
+ 194              	                EXPORT  PLL0_IRQHandler           [WEAK]
+ 195              	                EXPORT  RTC_IRQHandler            [WEAK]
+ 196              	                EXPORT  EINT0_IRQHandler          [WEAK]
+ 197              	                EXPORT  EINT1_IRQHandler          [WEAK]
+ 198              	                EXPORT  EINT2_IRQHandler          [WEAK]
+ 199              	                EXPORT  EINT3_IRQHandler          [WEAK]
+ 200              	                EXPORT  ADC_IRQHandler            [WEAK]
+ 201              	                EXPORT  BOD_IRQHandler            [WEAK]
+ 202              	                EXPORT  USB_IRQHandler            [WEAK]
+ 203              	                EXPORT  CAN_IRQHandler            [WEAK]
+ 204              	                EXPORT  DMA_IRQHandler            [WEAK]
+ 205              	                EXPORT  I2S_IRQHandler            [WEAK]
+ 206              	                EXPORT  ENET_IRQHandler           [WEAK]
+ 207              	                EXPORT  RIT_IRQHandler            [WEAK]
+ 208              	                EXPORT  MCPWM_IRQHandler          [WEAK]
+ 209              	                EXPORT  QEI_IRQHandler            [WEAK]
+ 210              	                EXPORT  PLL1_IRQHandler           [WEAK]
+ 211              	                EXPORT  USBActivity_IRQHandler	  [WEAK]
+ 212              	                EXPORT  CANActivity_IRQHandler	  [WEAK]
+ 213              	
+ 214              	WDT_IRQHandler
+ 215              	TIMER0_IRQHandler
+ 216              	TIMER1_IRQHandler
+ 217              	TIMER2_IRQHandler
+ 218              	TIMER3_IRQHandler
+ 219              	UART0_IRQHandler
+ 220              	UART1_IRQHandler
+ 221              	UART2_IRQHandler
+ 222              	UART3_IRQHandler
+ 223              	PWM1_IRQHandler
+ 224              	I2C0_IRQHandler
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccsgJ4Am.s 			page 5
+
+
+ 225              	I2C1_IRQHandler
+ 226              	I2C2_IRQHandler
+ 227              	SPI_IRQHandler
+ 228              	SSP0_IRQHandler
+ 229              	SSP1_IRQHandler
+ 230              	PLL0_IRQHandler
+ 231              	RTC_IRQHandler
+ 232              	EINT0_IRQHandler
+ 233              	EINT1_IRQHandler
+ 234              	EINT2_IRQHandler
+ 235              	EINT3_IRQHandler
+ 236              	ADC_IRQHandler
+ 237              	BOD_IRQHandler
+ 238              	USB_IRQHandler
+ 239              	CAN_IRQHandler
+ 240              	DMA_IRQHandler
+ 241              	I2S_IRQHandler
+ 242              	ENET_IRQHandler
+ 243              	RIT_IRQHandler
+ 244              	MCPWM_IRQHandler
+ 245              	QEI_IRQHandler
+ 246              	PLL1_IRQHandler
+ 247              	USBActivity_IRQHandler
+ 248              	CANActivity_IRQHandler
+ 249              	
+ 250 ???? 00E0     	                B       .
+ 251              	
+ 252              	                ENDP
+ 253              	
+ 254              	
+ 255              	                ALIGN
+ 256              	
+ 257              	
+ 258              	; User Initial Stack & Heap
+ 259              	
+ 260              	                IF      :DEF:__MICROLIB
+ 261              	
+ 262              	                EXPORT  __initial_sp
+ 263              	                EXPORT  __heap_base
+ 264              	                EXPORT  __heap_limit
+ 265              	
+ 266              	                ELSE
+ 267              	
+ 268              	                IMPORT  __use_two_region_memory
+ 269              	                EXPORT  __user_initial_stackheap
+ 270              	__user_initial_stackheap
+ 271              	
+ 272 ???? 0048     	                LDR     R0, =  Heap_Mem
+ 273              	                LDR     R1, =(Stack_Mem + Stack_Size)
+ 274              	                LDR     R2, = (Heap_Mem +  Heap_Size)
+ 275 ???? 004B     	                LDR     R3, = Stack_Mem
+ 276 ???? 7047     	                BX      LR
+ 277              	
+ 278              	                ALIGN
+ 279              	
+ 280              	                ENDIF
+ 281              	
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccsgJ4Am.s 			page 6
+
+
+ 282              	
+ 283 ???? 00000000 	                END
+****  Error:bad instruction `end'
+ 283      00000000 
+ 283      00000000 
+ 283      00000000 
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccsgJ4Am.s 			page 7
+
+
+DEFINED SYMBOLS
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:73     .text:00000000 .L161
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:74     .text:00000000 .L171
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:75     .text:00000000 .L181
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:76     .text:00000000 .L191
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:77     .text:00000000 .L201
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:78     .text:00000000 .L211
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:79     .text:00000000 .L221
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:80     .text:00000000 .L231
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:81     .text:00000000 .L241
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:82     .text:00000000 .L251
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:83     .text:00000000 .L261
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:84     .text:00000000 .L271
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:85     .text:00000000 .L281
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:86     .text:00000000 .L291
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:87     .text:00000000 .L301
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:88     .text:00000000 .L311
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:89     .text:00000000 .L321
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:90     .text:00000000 .L331
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:91     .text:00000000 .L341
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:92     .text:00000000 .L351
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:93     .text:00000000 .L361
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:94     .text:00000000 .L371
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:95     .text:00000000 .L381
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:96     .text:00000000 .L391
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:97     .text:00000000 .L401
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:98     .text:00000000 .L411
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:99     .text:00000000 .L421
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:100    .text:00000000 .L431
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:101    .text:00000000 .L441
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:102    .text:00000000 .L451
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:103    .text:00000000 .L461
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:104    .text:00000000 .L471
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:105    .text:00000000 .L481
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:106    .text:00000000 .L491
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:107    .text:00000000 .L501
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:110    .text:00000000 IF
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:110    .text:00000000 LNOT
+                            .text:00000000 $d
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:125    .text:00000000 $t
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:125    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:126    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:127    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:128    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:136    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:136    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:141    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:141    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:146    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:146    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:151    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:151    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:156    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:156    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:160    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:160    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:165    .text:00000000 L0
+ARM GAS  C:\Users\Gizmor\AppData\Local\Temp\ccsgJ4Am.s 			page 8
+
+
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:165    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:169    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:169    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:173    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:173    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:250    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:250    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:260    .text:00000000 DEF
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:272    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:275    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:276    .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:283    .text:00000000 $d
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:283    .text:00000000 $$lit_1
+                      .debug_line:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:283    .debug_line:00000000 L0
+                      .debug_line:0000005e L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:283    .text:00000010 L0
+                   .debug_aranges:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:283    .debug_aranges:00000010 L0
+                   .debug_aranges:0000000c $d
+                            .text:00000000 L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:283    .text:00000010 L0
+                      .debug_info:00000000 L0
+                      .debug_info:0000008f L0
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:283    .text:00000010 $t
+                            .data:00000000 $d
+                             .bss:00000000 $d
+                  .ARM.attributes:00000021 $d
+CMSIS/CM3/DeviceSupport/LPC17xx/startup/arm/startup_LPC17xx.s:283    .debug_line:00000000 $d
+                      .debug_info:0000008f $d
+                    .debug_abbrev:00000014 $d
+
+UNDEFINED SYMBOLS
+SystemInit
+__main
+Heap_Mem
+Stack_Mem
+Stack_Size
+Heap_Size
