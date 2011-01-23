@@ -1,0 +1,8 @@
+
+// openDrive LX200 Commands
+// :oD<...>#
+// <...> means one of the following commands:
+
+CR<nnnn>		//RA-Motor current <nnnn> = current in mA
+
+
