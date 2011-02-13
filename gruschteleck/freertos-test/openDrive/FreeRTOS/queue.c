@@ -1,5 +1,5 @@
 /*
-    FreeRTOS V6.1.0 - Copyright (C) 2010 Real Time Engineers Ltd.
+    FreeRTOS V6.1.1 - Copyright (C) 2011 Real Time Engineers Ltd.
 
     ***************************************************************************
     *                                                                         *
@@ -414,6 +414,10 @@ size_t xQueueSizeInBytes;
 			if( xReturn == pdPASS )
 			{
 				( pxMutex->uxRecursiveCallCount )++;
+			}
+			else
+			{
+				traceTAKE_MUTEX_RECURSIVE_FAILED( pxMutex );
 			}
 		}
 

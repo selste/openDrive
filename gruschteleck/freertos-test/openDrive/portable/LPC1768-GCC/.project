@@ -79,17 +79,17 @@
 		<link>
 			<name>CMSIS</name>
 			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/CMSIS</locationURI>
+			<location>/temp/openDrive/openDrive/gruschteleck/freertos-test/openDrive/CMSIS</location>
 		</link>
 		<link>
 			<name>FreeRTOS</name>
 			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/FreeRTOS</locationURI>
+			<location>/temp/openDrive/openDrive/gruschteleck/freertos-test/openDrive/FreeRTOS</location>
 		</link>
 		<link>
 			<name>openDrive</name>
 			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/openDrive</locationURI>
+			<location>/temp/openDrive/openDrive/gruschteleck/freertos-test/openDrive/openDrive</location>
 		</link>
 	</linkedResources>
 </projectDescription>
