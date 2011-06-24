@@ -1,0 +1,4 @@
+solsys2.o: novas/solsys2.c include/novas/novas.h include/novas/novascon.h \
+ include/novas/solarsystem.h include/novas/nutation.h
+novas/solsys2.c include/novas/novas.h include/novas/novascon.h :
+ include/novas/solarsystem.h include/novas/nutation.h :

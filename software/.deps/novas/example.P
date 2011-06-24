@@ -1,0 +1,6 @@
+example.o: novas/example.c include/novas/eph_manager.h \
+ include/novas/novas.h include/novas/novascon.h \
+ include/novas/solarsystem.h include/novas/nutation.h
+novas/example.c include/novas/eph_manager.h :
+ include/novas/novas.h include/novas/novascon.h :
+ include/novas/solarsystem.h include/novas/nutation.h :

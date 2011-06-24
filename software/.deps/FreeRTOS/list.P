@@ -1,0 +1,8 @@
+list.o: FreeRTOS/list.c include/FreeRTOS/FreeRTOS.h \
+ include/FreeRTOS/projdefs.h include/FreeRTOS/FreeRTOSConfig.h \
+ include/FreeRTOS/portable.h include/FreeRTOS/portable/portmacro.h \
+ include/FreeRTOS/mpu_wrappers.h include/FreeRTOS/list.h
+FreeRTOS/list.c include/FreeRTOS/FreeRTOS.h :
+ include/FreeRTOS/projdefs.h include/FreeRTOS/FreeRTOSConfig.h :
+ include/FreeRTOS/portable.h include/FreeRTOS/portable/portmacro.h :
+ include/FreeRTOS/mpu_wrappers.h include/FreeRTOS/list.h :

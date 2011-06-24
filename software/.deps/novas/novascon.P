@@ -1,0 +1,2 @@
+novascon.o: novas/novascon.c include/novas/novascon.h
+novas/novascon.c include/novas/novascon.h :

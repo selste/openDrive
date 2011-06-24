@@ -2,11 +2,11 @@
 #include "types.h"
 #include "opendrive-config.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
+#include "FreeRTOS/FreeRTOS.h"
+#include "FreeRTOS/task.h"
 
 #include "led.h"
-#include "led_port.h"
+#include "portable/LPC1768-GCC/led_port.h"
 
 
 // Function that creates a task.

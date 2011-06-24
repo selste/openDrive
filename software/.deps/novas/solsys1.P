@@ -1,0 +1,6 @@
+solsys1.o: novas/solsys1.c include/novas/novas.h include/novas/novascon.h \
+ include/novas/solarsystem.h include/novas/nutation.h \
+ include/novas/eph_manager.h
+novas/solsys1.c include/novas/novas.h include/novas/novascon.h :
+ include/novas/solarsystem.h include/novas/nutation.h :
+ include/novas/eph_manager.h :

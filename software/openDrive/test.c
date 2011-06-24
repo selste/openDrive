@@ -6,8 +6,8 @@
 #include "opendrive-config.h"
 
 /* Scheduler include files. */
-#include "FreeRTOS.h"
-#include "task.h"
+#include "FreeRTOS/FreeRTOS.h"
+#include "FreeRTOS/task.h"
 //#include "queue.h"
 
 

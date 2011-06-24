@@ -1,0 +1,63 @@
+<!DOCTYPE CrossStudio_for_ARM_Session_File>
+<session>
+ <Bookmarks/>
+ <Breakpoints>
+  <BreakpointListItem line="77" action="" hardwareBreakpoint="" trigger="" useHWbreakpoint="false" group="Breakpoints" type="Breakpoint" state="2" counter="0" isFunctionBreakpoint="false" filename="D:\Eigene Dateien\Eclipse\openDrive\portable\LPC1768-GCC\main.c" expression="" />
+  <BreakpointListItem line="102" action="" hardwareBreakpoint="" trigger="" useHWbreakpoint="false" group="Breakpoints" type="Breakpoint" state="2" counter="0" isFunctionBreakpoint="false" filename="D:\Eigene Dateien\Eclipse\openDrive\openDrive\TMC428.c" expression="" />
+  <BreakpointListItem line="130" action="" hardwareBreakpoint="" trigger="" useHWbreakpoint="false" group="Breakpoints" type="Breakpoint" state="2" counter="0" isFunctionBreakpoint="false" filename="D:\Eigene Dateien\Eclipse\openDrive\openDrive\uart.c" expression="" />
+ </Breakpoints>
+ <ExecutionCountWindow/>
+ <Memory1>
+  <MemoryWindow autoEvaluate="0" addressText="0x40018018" numColumns="8" sizeText="4" dataSize="1" radix="16" addressSpace="" />
+ </Memory1>
+ <Memory2>
+  <MemoryWindow autoEvaluate="0" addressText="" numColumns="8" sizeText="" dataSize="1" radix="16" addressSpace="" />
+ </Memory2>
+ <Memory3>
+  <MemoryWindow autoEvaluate="0" addressText="" numColumns="8" sizeText="" dataSize="1" radix="16" addressSpace="" />
+ </Memory3>
+ <Memory4>
+  <MemoryWindow autoEvaluate="0" addressText="" numColumns="8" sizeText="" dataSize="1" radix="16" addressSpace="" />
+ </Memory4>
+ <Project>
+  <ProjectSessionItem path="openDrive-LPC1768-Rowley" name="unnamed" />
+  <ProjectSessionItem path="openDrive-LPC1768-Rowley;openDrive-LPC1768-Rowley" name="unnamed" />
+  <ProjectSessionItem path="openDrive-LPC1768-Rowley;openDrive-LPC1768-Rowley;openDrive" name="unnamed" />
+  <ProjectSessionItem path="openDrive-LPC1768-Rowley;openDrive-LPC1768-Rowley;portable" name="unnamed" />
+ </Project>
+ <Register1>
+  <RegisterWindow openNodes="CPU;PWM1/PWM1LER;SPI0/S0SPSR;SSP1/SSP1CR0/FRF;SSP1/SSP1CR0/DSS;SSP1/SSP1CR1;SSP1/SSP1SR;SSP1/SSP1RIS;SSP1/SSP1DMACR;SCB;SCB/SCB_BFSR;SCB/SCB_HFSR;SCB/SCB_DFSR" binaryNodes="GPIO/FIO0DIR;GPIO/FIO0DIR0;GPIO/FIO0PIN0;GPIO/FIO1PIN0;PCB/PINSEL0/P0_6;PCB/PINSEL0/P0_7;PCB/PINSEL0/P0_8;PCB/PINSEL0/P0_9;PCB/PINSEL0/P0_10;PCB/PINSEL0/P0_11;PCB/PINSEL0/P0_15;PCB/PINMODE0;SSP1/SSP1SR" unsignedNodes="PWM1/PWM1TC;PWM1/PWM1PR;PWM1/PWM1MR0;PWM1/PWM1MR5;SSP1/SSP1CR0/SCR" visibleGroups="CPU;GPIO;SC;SSP1;PCB;SPI0;PWM1;SCB" decimalNodes="SPI0/S0SPCCR;SSP1/SSP1CPSR;SSP1/SSP1CPSR/CPSDVSR" octalNodes="" asciiNodes="" />
+ </Register1>
+ <Register2>
+  <RegisterWindow openNodes="" binaryNodes="" unsignedNodes="" visibleGroups="" decimalNodes="" octalNodes="" asciiNodes="" />
+ </Register2>
+ <Register3>
+  <RegisterWindow openNodes="" binaryNodes="" unsignedNodes="" visibleGroups="" decimalNodes="" octalNodes="" asciiNodes="" />
+ </Register3>
+ <Register4>
+  <RegisterWindow openNodes="" binaryNodes="" unsignedNodes="" visibleGroups="" decimalNodes="" octalNodes="" asciiNodes="" />
+ </Register4>
+ <TargetWindow programAction="" uploadFileType="" programLoadAddress="" programSize="" uploadFileName="" uploadMemoryInterface="" programFileName="" uploadStartAddress="" programFileType="" uploadSize="" programMemoryInterface="" />
+ <TraceWindow>
+  <Trace enabled="Yes" />
+ </TraceWindow>
+ <Watch1>
+  <Watches active="1" update="Twice a Second" >
+   <Watchpoint linenumber="130" radix="16" name="Item" expression="Item" filename="d:/eigene dateien/eclipse/opendrive/opendrive/uart.c" />
+   <Watchpoint linenumber="43" radix="-1" name="QueueItem" expression="QueueItem" filename="d:/eigene dateien/eclipse/opendrive/opendrive/cmdparser.c" />
+  </Watches>
+ </Watch1>
+ <Watch2>
+  <Watches active="0" update="Never" />
+ </Watch2>
+ <Watch3>
+  <Watches active="0" update="Never" />
+ </Watch3>
+ <Watch4>
+  <Watches active="0" update="Never" />
+ </Watch4>
+ <Files>
+  <SessionOpenFile useTextEdit="1" useBinaryEdit="0" codecName="Latin1" x="0" debugPath="D:\Eigene Dateien\openDrive\software\portable\LPC1768-GCC\main.c" y="17" path="D:\Eigene Dateien\openDrive\software\portable\LPC1768-GCC\main.c" left="0" selected="0" name="unnamed" top="0" />
+ </Files>
+ <ARMCrossStudioWindow activeProject="openDrive-LPC1768-Rowley" autoConnectTarget="Segger J-Link" debugSearchFileMap="" fileDialogInitialDirectory="D:\Eigene Dateien\Eclipse\openDrive\portable\LPC1768-GCC" fileDialogDefaultFilter="*.c" autoConnectCapabilities="388991" debugSearchPath="" buildConfiguration="THUMB Flash Debug" />
+</session>

@@ -1,0 +1,6 @@
+FreeRTOS/queue.c: Assembler messages:
+FreeRTOS/queue.c:499: Error: no such instruction: `swi 0'
+FreeRTOS/queue.c:561: Error: no such instruction: `swi 0'
+FreeRTOS/queue.c:897: Error: no such instruction: `swi 0'
+FreeRTOS/queue.c:918: Error: no such instruction: `swi 0'
+FreeRTOS/queue.c:978: Error: no such instruction: `swi 0'
