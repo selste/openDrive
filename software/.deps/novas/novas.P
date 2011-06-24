@@ -1,4 +1,0 @@
-novas.o: novas/novas.c include/novas/novas.h include/novas/novascon.h \
- include/novas/solarsystem.h include/novas/nutation.h
-novas/novas.c include/novas/novas.h include/novas/novascon.h :
- include/novas/solarsystem.h include/novas/nutation.h :

@@ -1,2 +1,0 @@
-cio_file.o: novas/cio_file.c
-novas/cio_file.c :

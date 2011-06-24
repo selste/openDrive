@@ -1,6 +1,0 @@
-checkout-stars.o: novas/checkout-stars.c include/novas/novas.h \
- include/novas/novascon.h include/novas/solarsystem.h \
- include/novas/nutation.h
-novas/checkout-stars.c include/novas/novas.h :
- include/novas/novascon.h include/novas/solarsystem.h :
- include/novas/nutation.h :

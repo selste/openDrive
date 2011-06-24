@@ -1,2 +1,0 @@
-readeph0.o: novas/readeph0.c
-novas/readeph0.c :
