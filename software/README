@@ -1,0 +1,28 @@
+Structure of this directory:
+
+- doc: A repository for all documentation related to the source code
+- FreeRTOS: The source code of FreeRTOS
+- openDrive: The source code of th openDrive Software
+- novas: The source code of the NOVAS library for astronomical claculations
+- include: ALL(!) include files
+	Include file policy:
+	* put an include file in the same directory as the source code,
+	  ONLY if no source file outside that directory may refer to it.
+	  This condition should only be true for internal definitions etc.
+	* Otherwise put your include file into a subdirectory of ./include.
+	  Put it into the first level subdirectory of the owning component.
+	  e.g. FreeRTOS owned include files can be found in include/FreeRTOS
+	* You can safely use #include #include "myinclude.h" in your source,
+	  because the Makefiles automatically extend the include path, when
+	  invoking the compiler.
+	* Use #include "Component/subdir/hisinclude.h" for including include
+	  files owned by other components or subdirectories
+	
+Makefile and Makefile.inc
+  The Makefiles are set up in a way, that all C-source files in directories
+  listed in SUBDIRS are automatically checked for their dependecies and
+  attempted to be built to an object (.o) file.
+  When building source files from a subdirectory, th subdirectories name
+  is automatically prefixed by ./include and that path is appended to the
+  -I(include_dir) list for the compiler.
+
