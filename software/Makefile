@@ -6,7 +6,7 @@ SUBDIRS 	+= novas openDrive FreeRTOS
 
 # -----------------   S   N   I   P -----------------
 # --- No need to change anything below this line. ---
-
+OBJECT		:= openDrive.bin
 SHELL		:=/bin/bash
 
 CC		:= gcc
@@ -32,8 +32,10 @@ DEPENDENCIES	:= $(OBJS):%.o=$(DEPDIR)/%.P)
 
 -include $(SRCS:%.c=$(DEPDIR)/%.P)
 
-default: all
-	@echo "Default Target"
+all : $(OBJECT)
+
+$(OBJECT): $(TARGETS)
+	gcc $+ -o $@
 
 test:
 	@echo Makefiles = $(MAKEFILES)
@@ -53,10 +55,8 @@ clean:
 	@rm $(TARGETS) 2>/dev/null || true
 	@echo ...[Done]
 	@echo -n Cleaning up OBJS
-	@rm $(OBJS) 2>/dev/null || true
+	@rm $(OBJECT) $(OBJS) 2>/dev/null || true
 	@echo ...[Done]
-
-all : $(OBJS)
 
 $(DEPDIR)/%.P : %.c
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@` 
