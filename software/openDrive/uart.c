@@ -1,18 +1,18 @@
 #include <string.h>
 
 #include "debug.h"
-#include "LPC17xx.h"
-#include "LPC1768_bitdef.h"
+#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
+#include "portable/LPC1768-GCC/LPC1768_bitdef.h"
 #include "types.h"
 #include "opendrive-config.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-#include "semphr.h"
+#include "FreeRTOS/FreeRTOS.h"
+#include "FreeRTOS/task.h"
+#include "FreeRTOS/queue.h"
+#include "FreeRTOS/semphr.h"
 
 #include "uart.h"
-#include "uart_port.h"
+#include "portable/LPC1768-GCC/uart_port.h"
 #include "cmdparser.h"
 
 
