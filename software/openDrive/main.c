@@ -1,12 +1,12 @@
 #include "debug.h"
 
-#include "LPC17xx.h"
+#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
 #include "LPC1768_bitdef.h"
 #include "types.h"
 #include "opendrive-config.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
+#include "FreeRTOS/FreeRTOS.h"
+#include "FreeRTOS/task.h"
 
 //#include "led.h"
 #include "test.h"
