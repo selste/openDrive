@@ -435,12 +435,13 @@ static tskTCB *prvAllocateTCBAndStack( unsigned short usStackDepth, portSTACK_TY
 
 
 /*lint +e956 */
-
+#if ( portHAS_THREADS == 1 )
 void *run_task(void *args) {
   tskTCB *tcb = (tskTCB *)args;
   tcb->params.function(tcb->params.params);
   return NULL;
 }
+#endif
 
 /*-----------------------------------------------------------
  * TASK CREATION API documented in task.h

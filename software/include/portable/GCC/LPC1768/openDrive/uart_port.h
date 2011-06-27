@@ -1,6 +1,8 @@
 #ifndef __openDrive_UART_PORT_H 
 #define __openDrive_UART_PORT_H
 
+#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
+#include "LPC1768_bitdef.h"
 
 #define IER_RBR		0x01
 #define IER_THRE	0x02
@@ -20,6 +22,7 @@
 #define LSR_THRE	0x20
 #define LSR_TEMT	0x40
 #define LSR_RXFE	0x80
+
 
 /* Interrupt-Handler */
 void UART2_IRQHandler(void);
@@ -48,10 +51,11 @@ static inline  unsigned char vUART1Port_ReceiveChar(void) {
 /* 
  * --------------------- UART 2 -------------------
  */
-extern volatile uint32_t UART2_Status;
-extern volatile uint8_t UART2_TxEmpty;
-extern volatile uint32_t UART2_ReceiveBufferPosW;
-extern uint32_t UART2_ReceiveBufferPosR;
+volatile uint8_t UART2_ReceiveBuffer[UART2_RECEIVE_BUFFER_SIZE];
+volatile uint32_t UART2_ReceiveBufferPosW;
+volatile uint32_t UART2_Status;
+volatile uint8_t UART2_TxEmpty;
+uint32_t UART2_ReceiveBufferPosR;
 
 
 static inline uint32_t xUART2Port_Init(void) {

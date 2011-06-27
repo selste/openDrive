@@ -1,15 +1,15 @@
-PORT		:= Intel
-PLATFORM	:= Linux
-LIBS		:= -lpthread
+PORT		:= GCC
+PLATFORM	:= LPC1768
+#LIBS		:= -lpthread
+LIBS		:= 
 
-#SUBDIRS 	+= FreeRTOS novas openDrive CMSIS
 SUBDIRS 	+= novas openDrive FreeRTOS
 
 # -----------------   S   N   I   P -----------------
 # --- No need to change anything below this line. ---
 OBJECT		:= openDrive.bin
 SHELL		:=/bin/bash
-
+DEFINES		:= -DPORT=$(PORT) -DPLATFORM=$(PLATFORM)
 CC		:= gcc
 CFLAGS		+= -g -Wno-unused-result
 
@@ -61,8 +61,8 @@ clean:
 
 $(DEPDIR)/%.P : %.c
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@` 
-	@$(CPP) $(INCLUDES) \
-	       -I./include/$(*D) -I./include/$(*D)/$(PORTABLE_DIR) \
+	$(CPP) $(INCLUDES) $(DEFINES) \
+	       -I./include/$(*D) -I./include/$(PORTABLE_DIR)/$(*D) \
 		$(CPPFLAGS) $< \
 	 | sed -n 's+^\# *[0-9][0-9]* *"\([^"]*\)".*+$*.o: \1+p' \
 	 | grep -v "<" | sort | uniq \
@@ -72,8 +72,8 @@ $(DEPDIR)/%.P : %.c
 %.o : %.c
 	@[ -d $(DSUBDIR) ] || mkdir -p $(DSUBDIR)
 	@echo -n Compiling $@
-	-@$(COMPILE.c) $(INCLUDES) \
-		       -I./include/$(*D) -I./include/$(*D)/$(PORTABLE_DIR) \
+	-$(COMPILE.c) $(INCLUDES) $(DEFINES) \
+		       -I./include/$(*D) -I./include/$(PORTABLE_DIR)/$(*D) \
 	               -Wp,-MMD,$(df).d \
 	               -o $@ $< 2>$(df).err
 	@cp $(df).d $(df).P; \
