@@ -1,8 +1,6 @@
 #include <string.h>
 
 #include "debug.h"
-// #include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
-// #include "portable/LPC1768-GCC/LPC1768_bitdef.h"
 #include "types.h"
 #include "opendrive-config.h"
 
@@ -18,26 +16,73 @@
 
 extern uint32_t SystemCoreClock;
 
-volatile uint32_t UART2_Status;
-volatile uint8_t UART2_TxEmpty = 1;
-volatile uint8_t UART2_ReceiveBuffer[UART2_RECEIVE_BUFFER_SIZE];
-uint8_t UART2_RX = 0;
+uint8_t UART1_IsInitialized, UART1_SenderTaskRunning, UART1_ReceiverTaskRunning;
+uint8_t UART2_IsInitialized, UART2_SenderTaskRunning, UART2_ReceiverTaskRunning;
+xQueueHandle UART1_SendQueue;
 xQueueHandle UART2_SendQueue;
+uint8_t UART1_RX;
+uint8_t UART2_RX;
+volatile xSemaphoreHandle UART1_ReceiveCntQueue;
 volatile xSemaphoreHandle UART2_ReceiveCntQueue;
-volatile uint32_t UART2_ReceiveBufferPosW = 0;
-uint32_t UART2_ReceiveBufferPosR = 0;
-uint8_t UART2_IsInitialized = 0, UART2_SenderTaskRunning = 0, UART2_ReceiverTaskRunning = 0;
 
-uint32_t xUART2Port_Init(void) {
-  
+static inline uint32_t xUART1_Init(void) {
+	int rc;
+
+	UART2_SendQueue = xQueueCreate(UART2_SENDQUEUE_ITEMS, sizeof(xUART2_SendQueue_t));      // create UART2 SendQueue
+	UART2_ReceiveCntQueue = xSemaphoreCreateCounting( UART2_RECEIVE_BUFFER_SIZE, 0 );  // create UART2 Receive CountingSemaphore
+
+	rc = xUART1Port_Init();
+
+	UART1_IsInitialized = 1;
+	return rc;
+}
+
+static inline uint32_t xUART2_Init(void) {
+	int rc;
+
+	UART2_SendQueue = xQueueCreate(UART2_SENDQUEUE_ITEMS, sizeof(xUART2_SendQueue_t));      // create UART2 SendQueue
+	UART2_ReceiveCntQueue = xSemaphoreCreateCounting( UART2_RECEIVE_BUFFER_SIZE, 0 );  // create UART2 Receive CountingSemaphore
+	
+	rc = xUART2Port_Init();
+	
+	UART2_IsInitialized = 1;
+	return rc;
 }
 
 void vUART_Init(void) {
-	xUART2Port_Init();
+	xUART1_Init();
+	xUART2_Init();
 }
 
-void vUART2Port_SendChar(unsigned char SendChar) {
+static inline void vUART2_SendChar(unsigned char SendChar) {
+  vUART2Port_SendChar(SendChar);
+}
+static inline void vUART1_SendChar(unsigned char SendChar) {
+  vUART1Port_SendChar(SendChar);
+}
 
+
+static inline void vUART2_SendCString(unsigned char *BufferPtr) {
+	while(*BufferPtr) {
+		vUART2_SendChar(*BufferPtr);
+		BufferPtr++;
+	}
+	return;
+}
+
+static inline void vUART1_SendCString(unsigned char *BufferPtr) {
+	while(*BufferPtr) {
+		vUART1_SendChar(*BufferPtr);
+		BufferPtr++;
+	}
+	return;
+}
+
+static inline unsigned char vUART1_ReceiveChar() {
+  return vUART1Port_ReceiveChar();
+}
+static inline unsigned char vUART2_ReceiveChar() {
+  return vUART2Port_ReceiveChar();
 }
 
 void vUART2_StartSenderTask( unsigned portBASE_TYPE uxPriority ) {
@@ -45,7 +90,8 @@ void vUART2_StartSenderTask( unsigned portBASE_TYPE uxPriority ) {
 	xTaskHandle xHandle;
 	
 	if(UART2_IsInitialized) {
-		portBASE_TYPE xStatus = xTaskCreate( vUART2_SenderTask, (signed portCHAR *) "USEND", UART_STACK_SIZE, &ucParameterToPass, uxPriority, &xHandle );	
+		portBASE_TYPE xStatus = xTaskCreate( vUART2_SenderTask, (signed portCHAR *) "USEND", 
+						     UART_STACK_SIZE, &ucParameterToPass, uxPriority, &xHandle );	
         
 		if(xStatus == pdTRUE) {
 			UART2_SenderTaskRunning = 1;
@@ -60,7 +106,7 @@ void vUART2_StartSenderTask( unsigned portBASE_TYPE uxPriority ) {
 } 
 
 void vUART2_StartReceiverTask( unsigned portBASE_TYPE uxPriority ) {
-	static unsigned char ucParameterToPass; 
+  static unsigned char ucParameterToPass; 
 	xTaskHandle xHandle;
     
 	if(UART2_IsInitialized) {
@@ -82,6 +128,7 @@ void vUART2_SenderTask( void * pvParameters ) {
 	( void ) pvParameters;
 	xUART2_SendQueue_t QueueItem;
 
+	vUART2_SendCString("UART 2 Output started\n");
 	while(1) {
 		//Sleep until there is anything to send...
 		if( xQueueReceive(UART2_SendQueue, &QueueItem, portMAX_DELAY )) {
@@ -98,22 +145,15 @@ void vUART2_ReceiverTask( void * pvParameters ) {
 	unsigned char ReceivedChar;
 	
 	static unsigned char StringBuffer[OD_CMDLENGTH];
-    static uint32_t UART2_Count = 0;	
+	static uint32_t UART2_Count = 0;	
 
 	while(1) {
 		//Sleep until there is anything received...
-        if( xSemaphoreTake( UART2_ReceiveCntQueue, portMAX_DELAY ) == pdTRUE ) {
-
+		if( xSemaphoreTake( UART2_ReceiveCntQueue, portMAX_DELAY ) == pdTRUE ) {
+			
 			//read char from buffer
-			ReceivedChar = UART2_ReceiveBuffer[UART2_ReceiveBufferPosR];
-	
-			//set readbuffer to next char
-			if(UART2_ReceiveBufferPosR == UART2_RECEIVE_BUFFER_SIZE-1) {
-				UART2_ReceiveBufferPosR = 0;
-			} else {
-				UART2_ReceiveBufferPosR++;
-			}
-	
+			ReceivedChar = vUART2Port_ReceiveChar();
+			
 			//interpret received char 
 			if(ReceivedChar == UART2_StringStartChar) {
 				//begin receiving a new string...
@@ -127,12 +167,12 @@ void vUART2_ReceiverTask( void * pvParameters ) {
 					StringBuffer[UART2_Count] = (unsigned char)'\0';					
 					UART2_RX = 0;
 					UART2_Count = 0;
-
+					
 					CMDParser_CMDQueue_t Item;
-                    memcpy(Item.ucValue, StringBuffer, OD_CMDLENGTH);
+					memcpy(Item.ucValue, StringBuffer, OD_CMDLENGTH);
 					Item.uxSourceID = OD_SID_UART2;
-
-                    xCMDParser_AddCMD2Queue(&Item);
+					
+					xCMDParser_AddCMD2Queue(&Item);
 				} else {
 					//received incomplete string...
 					UART2_RX = 0;
@@ -146,7 +186,7 @@ void vUART2_ReceiverTask( void * pvParameters ) {
 					debug_printf("Char '%c' dropped...\n", ReceivedChar);
 					continue;
 				}
-							
+				
 				StringBuffer[UART2_Count] = ReceivedChar;
 				UART2_Count++;
 			}
@@ -157,9 +197,9 @@ void vUART2_ReceiverTask( void * pvParameters ) {
 portBASE_TYPE xUART2_SendToQueue(xUART2_SendQueue_t *Item) {
 
 	portBASE_TYPE xStatus = pdFALSE;
-
+	
 	//extern xQueueHandle UART2_SendQueue;
-    if(!UART2_IsInitialized ) {
+	if(!UART2_IsInitialized ) {
 		debug_printf("xUART2_SendToQueue: Error - UART2 not initialized!\n");
 	}
 	
@@ -171,18 +211,5 @@ portBASE_TYPE xUART2_SendToQueue(xUART2_SendQueue_t *Item) {
 		xStatus = xQueueSendToBack(UART2_SendQueue, Item, 0 ); 	
 	}
 
-
 	return(xStatus);
 }
-
-/*** Send c-string ***/
-void vUART2_SendCString(unsigned char *BufferPtr) {
-
-	while(*BufferPtr) {
-		vUART2Port_SendChar(*BufferPtr);
-		BufferPtr++;
-	}
-
-	return;
-}
-

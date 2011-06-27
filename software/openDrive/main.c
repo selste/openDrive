@@ -30,13 +30,12 @@ int main (void) {
 	vPWMPort_StartPWM();
 	
 	//vStartTestTask(mainTEST_TASK_PRIORITY);
-	//vStartLEDTask(mainLED_TASK_PRIORITY);
+	vStartLEDTask(mainLED_TASK_PRIORITY);
 	vUART2_StartSenderTask(mainUARTSEND_TASK_PRIORITY);
 	vUART2_StartReceiverTask(mainUARTRECEIVE_TASK_PRIORITY);
 	//vSPI_StartTask(mainSPI_TASK_PRIORITY);
 
-//	vCMDParser_StartTask(mainCMDPARSER_TASK_PRIORITY);
-	vStartLEDTask( 10 ) ;    
+	vCMDParser_StartTask(mainCMDPARSER_TASK_PRIORITY);
 	vTaskStartScheduler();
 
 	for( ;; ) sleep(10);

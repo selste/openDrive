@@ -10,7 +10,7 @@ static void vLEDArray_Out() {
 static void vLEDArray_Set(unsigned char c) {
 	int i;
 	for ( i = 0; i < NR_LEDS; i ++) {
-		if (((c >> i) & 1UL) == 1) {
+	  if (((c >> (NR_LEDS-i)) & 1UL) == 1) {
 			LEDARR[i] = 'I';
 		} else {
 			LEDARR[i] = 'o';

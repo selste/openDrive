@@ -1,5 +1,6 @@
 PORT		:= Intel
 PLATFORM	:= Linux
+LIBS		:= -lpthread
 
 #SUBDIRS 	+= FreeRTOS novas openDrive CMSIS
 SUBDIRS 	+= novas openDrive FreeRTOS
@@ -10,7 +11,7 @@ OBJECT		:= openDrive.bin
 SHELL		:=/bin/bash
 
 CC		:= gcc
-CFLAGS		+= -g -Wno-switch-enum
+CFLAGS		+= -g -Wno-unused-result
 
 PORTABLE_DIR	:= portable/$(PORT)/$(PLATFORM)
 INCLUDES	+= -I. -I./include -I./include/$(PORTABLE_DIR)
@@ -35,7 +36,7 @@ DEPENDENCIES	:= $(OBJS):%.o=$(DEPDIR)/%.P)
 all : $(OBJECT)
 
 $(OBJECT): $(TARGETS)
-	gcc -lpthread $+ -o $@
+	gcc -static $+ -o $@ $(LIBS)
 
 test:
 	@echo Makefiles = $(MAKEFILES)
