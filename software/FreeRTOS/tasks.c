@@ -71,7 +71,9 @@ task.h is included from an application file. */
 #include "task.h"
 #include "timers.h"
 #include "StackMacros.h"
-
+#if ( portHAS_THREADS == 1 ) 
+  #include <pthread.h>
+#endif
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
 /*
@@ -79,6 +81,12 @@ task.h is included from an application file. */
  */
 #define tskIDLE_STACK_SIZE	configMINIMAL_STACK_SIZE
 
+#if ( portHAS_THREADS == 1)
+typedef struct run_task_parms {
+  pdTASK_CODE function;
+  void        *params;
+} run_task_parms;
+#endif
 /*
  * Task control block.  A task control block (TCB) is allocated to each task,
  * and stores the context of the task.
@@ -120,7 +128,11 @@ typedef struct tskTaskControlBlock
 	#if ( configGENERATE_RUN_TIME_STATS == 1 )
 		unsigned long ulRunTimeCounter;		/*< Used for calculating how much CPU time each task is utilising. */
 	#endif
-
+  
+        #if ( portHAS_THREADS == 1)
+                struct run_task_parms  params;
+                pthread_t thread;  
+        #endif
 } tskTCB;
 
 
@@ -424,7 +436,11 @@ static tskTCB *prvAllocateTCBAndStack( unsigned short usStackDepth, portSTACK_TY
 
 /*lint +e956 */
 
-
+void *run_task(void *args) {
+  tskTCB *tcb = (tskTCB *)args;
+  tcb->params.function(tcb->params.params);
+  return NULL;
+}
 
 /*-----------------------------------------------------------
  * TASK CREATION API documented in task.h
@@ -441,10 +457,20 @@ tskTCB * pxNewTCB;
 	/* Allocate the memory required by the TCB and stack for the new task,
 	checking that the allocation was successful. */
 	pxNewTCB = prvAllocateTCBAndStack( usStackDepth, puxStackBuffer );
-
+	
 	if( pxNewTCB != NULL )
 	{
 		portSTACK_TYPE *pxTopOfStack;
+#if ( portHAS_THREADS == 1 )
+		signed portBASE_TYPE rc = 0;
+		pthread_attr_t attr;
+		pxNewTCB -> params.function = pxTaskCode;
+		pxNewTCB -> params.params = pvParameters;
+		pthread_attr_init(&attr);
+		pthread_attr_setstacksize(&attr, (usStackDepth + 1)*4096);
+		rc = pthread_create(&pxNewTCB->thread, &attr, 
+				    run_task, (void *)pxNewTCB);
+#endif
 
 		#if( portUSING_MPU_WRAPPERS == 1 )
 			/* Should the task be created in privileged mode? */
@@ -587,7 +613,6 @@ tskTCB * pxNewTCB;
 			}
 		}
 	}
-
 	return xReturn;
 }
 /*-----------------------------------------------------------*/
@@ -665,6 +690,14 @@ tskTCB * pxNewTCB;
 	portTickType xTimeToWake;
 	portBASE_TYPE xAlreadyYielded, xShouldDelay = pdFALSE;
 
+#if ( portHAS_THREADS == 1 ) 
+	{
+	  #include <unistd.h>
+	  usleep(xTimeIncrement*portTICK_RATE_MS*1000UL);
+
+	  return;
+	}
+#endif
 		configASSERT( pxPreviousWakeTime );
 		configASSERT( ( xTimeIncrement > 0 ) );
 
@@ -798,7 +831,7 @@ tskTCB * pxNewTCB;
 	tskTCB *pxTCB;
 	unsigned portBASE_TYPE uxCurrentPriority;
 	portBASE_TYPE xYieldRequired = pdFALSE;
-
+	
 		configASSERT( ( uxNewPriority < configMAX_PRIORITIES ) );
 
 		/* Ensure the new priority is valid. */
@@ -891,6 +924,15 @@ tskTCB * pxNewTCB;
 				{
 					portYIELD_WITHIN_API();
 				}
+#if ( portHAS_THREADS == 1 )
+				{
+				  struct sched_param param = {
+				  sched_priority : uxNewPriority
+				  };
+				  
+				  pthread_setschedparam(pxTCB->thread, SCHED_OTHER, &param);
+				}
+#endif
 			}
 		}
 		taskEXIT_CRITICAL();

@@ -1,6 +1,9 @@
 THISDIR		:= FreeRTOS
 
-THISSRCS	:= croutine.c  list.c  queue.c  tasks.c  timers.c
+PORTABLES	:= port.c
+
+THISSRCS	:= croutine.c  list.c  queue.c  tasks.c  timers.c portable/MemMang/heap_sys.c
+THISSRCS	+= $(addprefix $(PORTABLE_DIR)/,$(PORTABLES))
 THISTARGET	:= FreeRTOS.a
 
 THISOBJS	:= $(THISSRCS:%.c=%.o)

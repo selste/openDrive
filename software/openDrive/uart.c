@@ -1,8 +1,8 @@
 #include <string.h>
 
 #include "debug.h"
-#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
-#include "portable/LPC1768-GCC/LPC1768_bitdef.h"
+// #include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
+// #include "portable/LPC1768-GCC/LPC1768_bitdef.h"
 #include "types.h"
 #include "opendrive-config.h"
 
@@ -12,7 +12,7 @@
 #include "FreeRTOS/semphr.h"
 
 #include "uart.h"
-#include "portable/LPC1768-GCC/uart_port.h"
+#include "uart_port.h"
 #include "cmdparser.h"
 
 
@@ -28,8 +28,16 @@ volatile uint32_t UART2_ReceiveBufferPosW = 0;
 uint32_t UART2_ReceiveBufferPosR = 0;
 uint8_t UART2_IsInitialized = 0, UART2_SenderTaskRunning = 0, UART2_ReceiverTaskRunning = 0;
 
+uint32_t xUART2Port_Init(void) {
+  
+}
+
 void vUART_Init(void) {
 	xUART2Port_Init();
+}
+
+void vUART2Port_SendChar(unsigned char SendChar) {
+
 }
 
 void vUART2_StartSenderTask( unsigned portBASE_TYPE uxPriority ) {

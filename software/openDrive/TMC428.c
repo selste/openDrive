@@ -1,7 +1,8 @@
+#include <types.h>
 #include "debug.h"
 
-#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
-#include "portable/LPC1768-GCC/LPC1768_bitdef.h"
+//#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
+//#include "portable/LPC1768-GCC/LPC1768_bitdef.h"
 #include "FreeRTOS/FreeRTOStypes.h"
 #include "opendrive-config.h"
 
@@ -11,9 +12,10 @@
 //#include "semphr.h"
 
 #include "TMC428.h"
-#include "portable/LPC1768-GCC/spi_port.h"
+//#include "portable/LPC1768-GCC/spi_port.h"
 #include "spi.h"
-#include "portable/LPC1768-GCC/pwm_port.h"
+#include "spi_port.h"
+#include "pwm_port.h"
 
 
 //The following array contains:
@@ -54,7 +56,7 @@ TMC428_MotorConfig_t MotorConfig[1]= {
 void TMC428_Init(void) {
 
     uint32_t cmd;
-
+	uint16_t i;
 	//LPC_PINCON->PINSEL9 &= ~((0b11 << LPC_PINCON_PINSEL9_P4_28));		// P4.28 => GPIO Port
     //LPC_GPIO4->FIODIR |= (1 << 28);									// P4.28 => Output
 	//LPC_PINCON->PINMODE9 |= (0b11 << LPC_PINCON_PINMODE9_P4_28);		// P4.28 => PullDown
@@ -63,7 +65,7 @@ void TMC428_Init(void) {
 
   	//Write the driver configuration data to the TMC428.
   	//This is the most important part of the intialization and should be done first of all!
-	for(uint16_t i=128; i<256; i+=2) {
+	for(i=128; i<256; i+=2) {
 		TMC428_Send(i, 0, driver_table[i-127], driver_table[i-128]);
 	}
 

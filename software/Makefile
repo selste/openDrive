@@ -1,5 +1,5 @@
-PORT		:= GCC
-PLATFORM	:= LPC1768
+PORT		:= Intel
+PLATFORM	:= Linux
 
 #SUBDIRS 	+= FreeRTOS novas openDrive CMSIS
 SUBDIRS 	+= novas openDrive FreeRTOS
@@ -12,8 +12,8 @@ SHELL		:=/bin/bash
 CC		:= gcc
 CFLAGS		+= -g -Wno-switch-enum
 
-PORTABLE_INCL	:= portable/$(PORT)/$(PLATFORM)
-INCLUDES	+= -I. -I./include -I./include/$(PORTABLE_INCL)
+PORTABLE_DIR	:= portable/$(PORT)/$(PLATFORM)
+INCLUDES	+= -I. -I./include -I./include/$(PORTABLE_DIR)
 INCLUDE_THIS	:= -I./include/$(*D) # hmpf this does not expand
 
 DEPDIR   	:= .deps
@@ -35,7 +35,7 @@ DEPENDENCIES	:= $(OBJS):%.o=$(DEPDIR)/%.P)
 all : $(OBJECT)
 
 $(OBJECT): $(TARGETS)
-	gcc $+ -o $@
+	gcc -lpthread $+ -o $@
 
 test:
 	@echo Makefiles = $(MAKEFILES)
@@ -60,8 +60,8 @@ clean:
 
 $(DEPDIR)/%.P : %.c
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@` 
-	$(CPP) $(INCLUDES) \
-	       -I./include/$(*D) -I./include/$(*D)/$(PORTABLE_INCL) \
+	@$(CPP) $(INCLUDES) \
+	       -I./include/$(*D) -I./include/$(*D)/$(PORTABLE_DIR) \
 		$(CPPFLAGS) $< \
 	 | sed -n 's+^\# *[0-9][0-9]* *"\([^"]*\)".*+$*.o: \1+p' \
 	 | grep -v "<" | sort | uniq \
@@ -72,7 +72,7 @@ $(DEPDIR)/%.P : %.c
 	@[ -d $(DSUBDIR) ] || mkdir -p $(DSUBDIR)
 	@echo -n Compiling $@
 	-@$(COMPILE.c) $(INCLUDES) \
-		       -I./include/$(*D) -I./include/$(*D)/$(PORTABLE_INCL) \
+		       -I./include/$(*D) -I./include/$(*D)/$(PORTABLE_DIR) \
 	               -Wp,-MMD,$(df).d \
 	               -o $@ $< 2>$(df).err
 	@cp $(df).d $(df).P; \
@@ -82,6 +82,3 @@ $(DEPDIR)/%.P : %.c
 	@[ ! -s $(df).err ] || ( echo "" && cat $(df).err && echo "" && false )
 	@rm $(df).err
 	@echo ...[Done]
-
-
-
