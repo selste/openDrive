@@ -1,6 +1,6 @@
 THISDIR		:= openDrive
 
-THISSRCS	:= main.c hw.c uart.c pwm.c cmdparser.c debug.c led.c control.c
+THISSRCS	:= main.c hw.c uart.c pwm.c cmdparser.c debug.c led.c motor_control.c
 THISTARGET	:= openDrive.a
 
 THISOBJS	:= $(THISSRCS:%.c=%.o)

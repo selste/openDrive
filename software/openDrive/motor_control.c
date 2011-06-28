@@ -112,9 +112,8 @@ TEST_PREFIX
         RUN_TEST(unequal,{1==0;},0);
         RUN_TEST(must_fail,{1==0;},1);
         RUN_TEST(equal,{1==1;},1);
-RUN_TEST(timespec1,{ struct time_spec help; 
+	RUN_TEST(timespec1,{ struct time_spec help; 
 		timespec_sub(&help,&e0u1k,&e0u2k);
-		printf("%d,%ld\n",help.epoch, help.usecs);
 		help.epoch != -1 || help.usecs != 999000;},0);
 TEST_SUFFIX
 #endif
