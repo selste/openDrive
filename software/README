@@ -12,16 +12,18 @@ Structure of this directory:
 	* Otherwise put your include file into a subdirectory of ./include.
 	  Put it into the first level subdirectory of the owning component.
 	  e.g. FreeRTOS owned include files can be found in include/FreeRTOS
-	* You can safely use #include #include "myinclude.h" in your source,
-	  because the Makefiles automatically extend the include path, when
-	  invoking the compiler.
+	* You can safely use #include "myinclude.h" in your source, because 
+	  the Makefiles automatically extend the include path, when invoking 
+	  the compiler.
 	* Use #include "Component/subdir/hisinclude.h" for including include
 	  files owned by other components or subdirectories
+	* include/portable/Component contains the platform dependent parts
+	  include/Component should only contain platform independent headers.
 	
 Makefile and Makefile.inc
-  The Makefiles are set up in a way, that all C-source files in directories
-  listed in SUBDIRS are automatically checked for their dependecies and
-  attempted to be built to an object (.o) file.
+  The Makefiles are set up in a way, that all source files listed in the
+  Makefile in the directories listed in SUBDIRS are automatically checked 
+  for their dependecies and attempted to be built to an object (.o) file.
   When building source files from a subdirectory, th subdirectories name
   is automatically prefixed by ./include and that path is appended to the
   -I(include_dir) list for the compiler.
