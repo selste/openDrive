@@ -1,7 +1,9 @@
-PORT		:= GCC
-PLATFORM	:= LPC1768
-#LIBS		:= -lpthread
-LIBS		:= 
+PORT		:= Intel
+PLATFORM	:= Linux
+LIBS		:= -lpthread
+#PORT		:= GCC
+#PLATFORM	:= LPC1768
+#LIBS		:= 
 
 SUBDIRS 	+= novas openDrive FreeRTOS
 
@@ -11,7 +13,7 @@ OBJECT		:= openDrive.bin
 SHELL		:=/bin/bash
 DEFINES		:= -DPORT=$(PORT) -DPLATFORM=$(PLATFORM)
 CC		:= gcc
-CFLAGS		+= -g -Wno-unused-result
+CFLAGS		+= -g 
 
 PORTABLE_DIR	:= portable/$(PORT)/$(PLATFORM)
 INCLUDES	+= -I. -I./include -I./include/$(PORTABLE_DIR)
@@ -80,6 +82,16 @@ $(DEPDIR)/%.P : %.c
          sed -e 's+#.*++' -e 's+^[^:]*: *++' -e 's+ *\\$$++' \
              -e '/^$$/ d' -e 's+$$+ :+' < $(df).d >> $(df).P; \
          rm -f $(df).d
-	@[ ! -s $(df).err ] || ( echo "" && cat $(df).err && echo "" && false )
+	[ ! -s $(df).err ] || ! cat $(df).err 
+	@rm $(df).err
+	@echo ...[Done]
+
+% : %.c
+	@[ -d $(DSUBDIR) ] || mkdir -p $(DSUBDIR)
+	@echo -n Compiling $@
+	-$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -DTEST_MODE \
+		       -I./include/$(*D) -I./include/$(PORTABLE_DIR)/$(*D) \
+	               -o $@ $< 2>$(df).err
+	@[ ! -s $(df).err ] || ! cat $(df).err
 	@rm $(df).err
 	@echo ...[Done]
