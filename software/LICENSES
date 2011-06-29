@@ -1,0 +1,21 @@
+
+openDrive LICENSING conditions:
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+
+Components used in this project are subject to different licenses:
+FreeRTOS/LICENSE : Modified GNU GENERAL PUBLIC LICENSE (GPL)
+NOVAS/LICENSE    : Public Domain (http://aa.usno.navy.mil/software/novas/novas_info.php)
+openDrive/LICENSE: GNU GENERAL PUBLIC LICENSE (GPLv2)
+
+#FIXME: We need to check its compatibility with the project
+CMSIS/LICENSE	 : ARM License
+
+#FIXME: We need to rewrite these include files
+include/portable/GCC/LPC1768/openDrive/LPC1768.h
+include/portable/GCC/LPC1768/openDrive/LPC1000.h
+are distributed under the LUMINARY MICRO SOFTWARE LICENSE AGREEMENT
+as shown in include/portable/GCC/LPC1768/openDrive/EULA.txt
+
