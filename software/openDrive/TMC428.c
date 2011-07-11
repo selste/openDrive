@@ -1,7 +1,7 @@
 #include <types.h>
 #include "debug.h"
 
-//#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
+#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
 //#include "portable/LPC1768-GCC/LPC1768_bitdef.h"
 #include "FreeRTOS/FreeRTOStypes.h"
 #include "opendrive-config.h"
@@ -11,6 +11,7 @@
 //#include "queue.h"
 //#include "semphr.h"
 
+#include "motor_driver.h"
 #include "TMC428.h"
 //#include "portable/LPC1768-GCC/spi_port.h"
 #include "spi.h"
@@ -284,4 +285,35 @@ void TMC428_SendReceiveArray(unsigned char *Received, unsigned char *Send) {
 	TMC428_SendReceive(Send[0], Send[1], Send[2], Send[3], Received);
 }
 
+static void 
+TMC428_getPosition(struct motor *motor,struct position *store) 
+{
+}
+static struct time_spec 
+TMC428_moveToPosition(struct motor *motor, 
+	       struct position *src, struct position *tgt, 
+	       boolean_t simul){
+  struct time_spec time = {0,};
+  return time;
+}
 
+static struct time_spec
+TMC428_accelerateTo(struct motor *motor, speed_t src, speed_t tgt, boolean_t simul){
+  struct time_spec time = {0,};
+  return time;
+}
+
+static int 
+TMC428_setSpeed(struct motor *motor,speed_t spd) {
+  return 0;
+}
+
+struct motor_driver TMC428_driver = {
+ getPosition: TMC428_getPosition,
+ moveToPosition: TMC428_moveToPosition,
+ accelerateTo:  TMC428_accelerateTo,
+ setSpeed:  TMC428_setSpeed,
+};
+
+
+ 
