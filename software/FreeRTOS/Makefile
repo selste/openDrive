@@ -15,7 +15,3 @@ SRCS		+= $(CSRCS)
 OBJS		+= $(COBJS)
 TARGETS		+= $(CTARG)
 
-all: $(CTARG)
-
-$(CTARG): $(COBJS) 
-	$(AR) cr $@ $+

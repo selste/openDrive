@@ -2,7 +2,6 @@
 #include "debug.h"
 
 #include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
-//#include "portable/LPC1768-GCC/LPC1768_bitdef.h"
 #include "FreeRTOS/FreeRTOStypes.h"
 #include "opendrive-config.h"
 
@@ -13,7 +12,6 @@
 
 #include "motor_driver.h"
 #include "TMC428.h"
-//#include "portable/LPC1768-GCC/spi_port.h"
 #include "spi.h"
 #include "spi_port.h"
 #include "pwm_port.h"

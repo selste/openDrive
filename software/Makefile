@@ -3,22 +3,26 @@ PLATFORM	:= Linux
 LIBS		:= -lpthread
 CROSS_COMPILE   := 
 
-#PORT		:= GCC
-#PLATFORM	:= LPC1768
-#LIBS		:= 
-#CROSS_COMPILE   := arm-elf-
+PORT		:= GCC
+PLATFORM	:= LPC1768
+LIBS		:=
+CROSS_COMPILE   := arm-elf-
 
 SUBDIRS 	+= novas openDrive FreeRTOS
 
 # -----------------   S   N   I   P -----------------
 # --- No need to change anything below this line. ---
-OBJECT		:= openDrive.bin
+TARGET		:= openDrive
+FORMAT 		:= ihex
 SHELL		:=/bin/bash
 DEFINES		:= -DPORT=$(PORT) -DPLATFORM=$(PLATFORM)
-
+LIBS		+=-lm
 CC		:= $(CROSS_COMPILE)gcc
 CFLAGS		+= -g 
 AR		:= $(CROSS_COMPILE)ar 
+OBJCOPY		:= $(CROSS_COMPILE)objcopy
+OBJDUMP		:= $(CROSS_COMPILE)objdump
+NM		:= $(CROSS_COMPILE)nm
 
 PORTABLE_DIR	:= portable/$(PORT)/$(PLATFORM)
 INCLUDES	+= -I. -I./include -I./include/$(PORTABLE_DIR)
@@ -40,10 +44,7 @@ DEPENDENCIES	:= $(OBJS):%.o=$(DEPDIR)/%.P)
 
 -include $(SRCS:%.c=$(DEPDIR)/%.P)
 
-all : $(OBJECT)
-
-$(OBJECT): $(TARGETS)
-	$(CC) -static $+ -o $@ $(LIBS)
+all : build
 
 test:
 	@echo Makefiles = $(MAKEFILES)
@@ -61,9 +62,58 @@ clean:
 	@echo ...[Done]
 	@echo -n Cleaning up TARGETS
 	@rm $(TARGETS) 2>/dev/null || true
-	@echo ...[Done]
+	@echo ...[Done]	
 	@echo -n Cleaning up OBJS
 	@rm $(OBJECT) $(OBJS) 2>/dev/null || true
+	@echo ...[Done]
+
+ifeq ($(FORMAT),ihex)
+build: elf hex lss sym
+hex: $(TARGET).hex
+IMGEXT=hex
+else 
+ifeq ($(FORMAT),binary)
+build: elf bin lss sym
+bin: $(TARGET).bin
+IMGEXT=bin
+else 
+$(error "$(MSG_FORMATERROR) $(FORMAT)")
+endif
+endif
+
+elf: $(TARGET).elf
+lss: $(TARGET).lss 
+sym: $(TARGET).sym
+
+# Create final output file (.hex) from ELF output file.
+%.hex: %.elf
+	@echo -n Creating $(*F).hex
+	@$(OBJCOPY) -O $(FORMAT) $< $@
+	@echo ...[Done]
+
+# Create final output file (.bin) from ELF output file.
+%.bin: %.elf
+	@echo -n Creating $(*F).bin
+	@$(OBJCOPY) -O $(FORMAT) $< $@
+	@echo ...[Done]
+
+# Create extended listing file from ELF output file.
+# testing: option -C
+%.lss: %.elf
+	@echo -n Creating $(*F).lss
+	@$(OBJDUMP) -h -S -C $< > $@
+	@echo ...[Done]
+
+# Create a symbol table from ELF output file.
+%.sym: %.elf
+	@echo -n Creating $(*F).sym
+	@$(NM) -n $< > $@
+	@echo ...[Done]
+
+# Link: create ELF output file from object files.
+%.elf:  $(OBJS)
+	@echo -n Creating $(*F).elf
+	@$(CC) $(THUMB) $+ --output $@ $(LIBS) $(LDFLAGS)
 	@echo ...[Done]
 
 $(DEPDIR)/%.P : %.c

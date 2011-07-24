@@ -4,6 +4,8 @@
 
 #include "timespec.h"
 
+#define ABS(x) (((x)<0)?(-(x)):(x))
+
 typedef struct wait_queue {
 	int wait;
 } wait_queue;
@@ -32,6 +34,10 @@ typedef struct Motor {
 	unsigned long int min_accel; // How much can we change speed in a single step
 	unsigned long int inactive:1;
 } Motor;
+
+void usleep(int x) { }
+int genericDoRamp(struct Motor *motor,
+		  struct MotorPosition *from, struct MotorPosition *to) { }
 
 static inline void
 wakeUp(struct wait_queue *wq) 

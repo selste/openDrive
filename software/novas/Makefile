@@ -1,7 +1,7 @@
 THISDIR		:= novas
 
 THISSRCS	:= eph_manager.c novas.c novascon.c nutation.c readeph0.c \
-		   solsys1.c solsys2.c solsys3.c
+		   solsys1.c
 
 THISTARGET	:= libnovas.a
 
