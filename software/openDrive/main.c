@@ -17,7 +17,9 @@
 #include "cmdparser.h"
 #include "main.h"
 
+void sleep(int x) {
 
+}
 int main (void) {
 
 	SystemInit();

@@ -18,4 +18,4 @@ TARGETS		+= $(CTARG)
 all: $(CTARG)
 
 $(CTARG): $(COBJS) 
-	ar cr $@ $+
+	$(AR) cr $@ $+

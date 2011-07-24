@@ -1,9 +1,12 @@
 PORT		:= Intel
 PLATFORM	:= Linux
 LIBS		:= -lpthread
+CROSS_COMPILE   := 
+
 #PORT		:= GCC
 #PLATFORM	:= LPC1768
 #LIBS		:= 
+#CROSS_COMPILE   := arm-elf-
 
 SUBDIRS 	+= novas openDrive FreeRTOS
 
@@ -12,8 +15,10 @@ SUBDIRS 	+= novas openDrive FreeRTOS
 OBJECT		:= openDrive.bin
 SHELL		:=/bin/bash
 DEFINES		:= -DPORT=$(PORT) -DPLATFORM=$(PLATFORM)
-CC		:= gcc
+
+CC		:= $(CROSS_COMPILE)gcc
 CFLAGS		+= -g 
+AR		:= $(CROSS_COMPILE)ar 
 
 PORTABLE_DIR	:= portable/$(PORT)/$(PLATFORM)
 INCLUDES	+= -I. -I./include -I./include/$(PORTABLE_DIR)
@@ -38,7 +43,7 @@ DEPENDENCIES	:= $(OBJS):%.o=$(DEPDIR)/%.P)
 all : $(OBJECT)
 
 $(OBJECT): $(TARGETS)
-	gcc -static $+ -o $@ $(LIBS)
+	$(CC) -static $+ -o $@ $(LIBS)
 
 test:
 	@echo Makefiles = $(MAKEFILES)
@@ -76,14 +81,14 @@ $(DEPDIR)/%.P : %.c
 	@echo -n Compiling $@
 	@$(COMPILE.c) $(INCLUDES) $(DEFINES) \
 		       -I./include/$(*D) -I./include/$(PORTABLE_DIR)/$(*D) \
-	               -Wp,-MMD,$(df).d \
-	               -o $@ $< 2>$(df).err
-	@cp $(df).d $(df).P; \
+	               -Wp,-MMD,$(DEPDIR)/$(*D)/$(*F).d \
+	               -o $@ $< 2>$(DEPDIR)/$(*D)/$(*F).err; \
+	 cp $(DEPDIR)/$(*D)/$(*F).d $(DEPDIR)/$(*D)/$(*F).P; \
          sed -e 's+#.*++' -e 's+^[^:]*: *++' -e 's+ *\\$$++' \
-             -e '/^$$/ d' -e 's+$$+ :+' < $(df).d >> $(df).P; \
-         rm -f $(df).d
-	@[ ! -s $(df).err ] || ! cat $(df).err 
-	@rm $(df).err
+             -e '/^$$/ d' -e 's+$$+ :+' < $(DEPDIR)/$(*D)/$(*F).d >> $(DEPDIR)/$(*D)/$(*F).P; \
+         rm -f $(DEPDIR)/$(*D)/$(*F).d || echo ...[Done]
+	@[ ! -s $(DEPDIR)/$(*D)/$(*F).err ] || ( echo "" && ! cat $(DEPDIR)/$(*D)/$(*F).err  )
+	@rm $(DEPDIR)/$(*D)/$(*F).err
 	@echo ...[Done]
 
 % : %.c
@@ -91,7 +96,7 @@ $(DEPDIR)/%.P : %.c
 	@echo -n Compiling $@
 	@$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -DTEST_MODE \
 		       -I./include/$(*D) -I./include/$(PORTABLE_DIR)/$(*D) \
-	               -o $@ $< 2>$(df).err
-	@[ ! -s $(df).err ] || ! cat $(df).err
-	@rm $(df).err
+	               -o $@ $< 2>$(DEPDIR)/$(*D)/$(*F).err
+	@[ ! -s $(DEPDIR)/$(*D)/$(*F).err ] || ( echo "" && ! cat $(DEPDIR)/$(*D)/$(*F).err  )
+	@rm $(DEPDIR)/$(*D)/$(*F).err
 	@echo ...[Done]
