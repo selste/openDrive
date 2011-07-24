@@ -14,9 +14,9 @@ SUBDIRS 	+= novas openDrive FreeRTOS
 # --- No need to change anything below this line. ---
 TARGET		:= openDrive
 FORMAT 		:= ihex
-SHELL		:=/bin/bash
+SHELL		:= /bin/bash
 DEFINES		:= -DPORT=$(PORT) -DPLATFORM=$(PLATFORM)
-LIBS		+=-lm
+LIBS		+= -lm
 CC		:= $(CROSS_COMPILE)gcc
 CFLAGS		+= -g 
 AR		:= $(CROSS_COMPILE)ar 
@@ -34,7 +34,6 @@ df 		:= $(DEPDIR)/$(*D)/$(*F)
 
 SRCS		:=
 OBJS		:=
-TARGETS		:=
 
 MAKEFILES	:= $(foreach sdir,$(SUBDIRS),$(sdir)/Makefile)
 -include $(MAKEFILES)
@@ -42,16 +41,16 @@ MAKEFILES	:= $(foreach sdir,$(SUBDIRS),$(sdir)/Makefile)
 DEPDIRS 	:= $(addprefix $(DEPDIR)/,$(SUBDIRS))
 DEPENDENCIES	:= $(OBJS):%.o=$(DEPDIR)/%.P)
 
--include $(SRCS:%.c=$(DEPDIR)/%.P)
 
 all : build
+
+-include $(SRCS:%.c=$(DEPDIR)/%.P)
 
 test:
 	@echo Makefiles = $(MAKEFILES)
 	@echo DEPDIRS   = $(DEPDIRS)
 	@echo SRCS      = $(SRCS)
 	@echo OBJS      = $(OBJS)
-	@echo TAGRETS   = $(TARGETS)
 
 rebuild:
 	touch $(SRCS)
@@ -60,11 +59,11 @@ clean:
 	@echo -n Cleaning up DEPDIRS 
 	@rm -fr $(DEPDIR) 2>/dev/null || true
 	@echo ...[Done]
-	@echo -n Cleaning up TARGETS
-	@rm $(TARGETS) 2>/dev/null || true
-	@echo ...[Done]	
 	@echo -n Cleaning up OBJS
 	@rm $(OBJECT) $(OBJS) 2>/dev/null || true
+	@echo ...[Done]
+	@echo -n Cleaning up TARGETS
+	@rm $(TARGET).* 2>/dev/null || true
 	@echo ...[Done]
 
 ifeq ($(FORMAT),ihex)
