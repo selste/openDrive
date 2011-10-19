@@ -173,6 +173,20 @@ portSTACK_TYPE *pxOriginalTOS;
 
 	return pxTopOfStack;
 }
+/* 
+ * The scheduler can only be started from ARM mode, hence the inclusion of this
+ * function here.
+ */
+void vPortISRStartFirstTask( void );
+/*-----------------------------------------------------------*/
+
+void vPortISRStartFirstTask( void )
+{
+	/* Simply start the scheduler.  This is included here as it can only be
+	called from ARM mode. */
+	portRESTORE_CONTEXT();
+}
+
 /*-----------------------------------------------------------*/
 
 portBASE_TYPE xPortStartScheduler( void )

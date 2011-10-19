@@ -35,7 +35,5 @@ void vUART2_StartReceiverTask( unsigned portBASE_TYPE uxPriority );
 void vUART2_SenderTask( void * pvParameters );
 void vUART2_ReceiverTask( void * pvParameters );
 portBASE_TYPE xUART2_SendToQueue(xUART2_SendQueue_t *Item);
-void vUART2_SendCString(unsigned char *BufferPtr);
-
 
 #endif /* end __openDrive_UART_H */
