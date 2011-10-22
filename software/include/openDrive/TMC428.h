@@ -119,3 +119,4 @@ void TMC428_SendReceiveArray(unsigned char *Received, unsigned char *Send);
 
 
 #endif /* end __openDrive_TMC428_H */
+

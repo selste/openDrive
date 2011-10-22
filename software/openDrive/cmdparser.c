@@ -4,8 +4,8 @@
 #include <stdio.h>
 
 #include "debug.h"
-#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
-#include "portable/LPC1768-GCC/LPC1768_bitdef.h"
+//#include "CMSIS/CM3/DeviceSupport/LPC17xx/LPC17xx.h"
+//#include "portable/LPC1768-GCC/LPC1768_bitdef.h"
 #include "types.h"
 #include "opendrive-config.h"
 
@@ -97,7 +97,7 @@ void CMDParser_CMD_oDCR(CMDParser_CMDQueue_t *QueueItem, xUART2_SendQueue_t *Res
 			return;
 		}
 
-        TMC428_SetMotorCurrent(TMC428_MotorRA, &current);
+        //TMC428_SetMotorCurrent(TMC428_MotorRA, &current);
 		sprintf(Response->ucValue, "oDCR%d\n", current);		
 	} else {		
 		strncpy(Response->ucValue, "ERR_NC\n", OD_CMDLENGTH); // no current value send

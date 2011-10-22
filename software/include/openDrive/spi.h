@@ -8,3 +8,4 @@ void vSPI_StartTask( unsigned portBASE_TYPE uxPriority );
 void vSPI_Task( void * pvParameters );
 
 #endif /* end __openDrive_SPI_H */
+
